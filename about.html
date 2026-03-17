@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>VoltRide — About Us</title>
+  <link rel="stylesheet" href="style.css"/>
+  <style>
+    .about-hero-inner {
+      display: grid; grid-template-columns: 1fr 1fr;
+      align-items: center; gap: 6rem;
+    }
+    .big-number {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 12rem; color: var(--volt);
+      line-height: 1; opacity: .08;
+      position: absolute; right: 3rem; top: 50%;
+      transform: translateY(-50%);
+      pointer-events: none;
+    }
+    .mission-grid {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 1.5px; background: var(--border);
+    }
+    .mission-item {
+      background: var(--mid); padding: 3rem;
+    }
+    .mission-number {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 4rem; color: var(--volt);
+      line-height: 1; margin-bottom: .8rem;
+    }
+    .mission-title {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.3rem; letter-spacing: .05em;
+      margin-bottom: .8rem;
+    }
+    .mission-text { font-size: .88rem; line-height: 1.75; color: var(--muted); }
+
+    .timeline { position: relative; padding: 2rem 0; }
+    .timeline::before {
+      content: '';
+      position: absolute; left: 50%; top: 0; bottom: 0;
+      width: 1px; background: var(--border);
+      transform: translateX(-50%);
+    }
+    .tl-item {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 4rem; margin-bottom: 4rem; align-items: center;
+    }
+    .tl-item:nth-child(even) .tl-content { order: 2; }
+    .tl-item:nth-child(even) .tl-year-wrap { order: 1; text-align: right; }
+    .tl-year {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 4rem; color: var(--volt);
+      line-height: 1;
+    }
+    .tl-content { background: var(--mid); border: 1px solid var(--border); padding: 2rem; }
+    .tl-content h3 { font-family: 'Bebas Neue', sans-serif; font-size: 1.3rem; letter-spacing: .05em; margin-bottom: .6rem; }
+    .tl-content p { font-size: .85rem; color: var(--muted); line-height: 1.7; }
+
+    .team-grid {
+      display: grid; grid-template-columns: repeat(4,1fr);
+      gap: 1.5px; background: var(--border);
+    }
+    .team-card { background: var(--black); padding: 2rem; text-align: center; transition: background .3s; }
+    .team-card:hover { background: var(--mid); }
+    .team-avatar {
+      width: 80px; height: 80px; border-radius: 50%;
+      background: var(--mid); border: 2px solid var(--border);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 2rem; margin: 0 auto 1.2rem;
+    }
+    .team-name { font-family: 'Bebas Neue', sans-serif; font-size: 1.1rem; letter-spacing: .05em; }
+    .team-role { font-size: .72rem; color: var(--volt); letter-spacing: .1em; text-transform: uppercase; margin-top: .2rem; }
+    .team-bio { font-size: .78rem; color: var(--muted); margin-top: .8rem; line-height: 1.6; }
+
+    .values-list { display: flex; flex-direction: column; gap: .5rem; }
+    .value-item {
+      display: flex; gap: 1.5rem; align-items: flex-start;
+      padding: 1.5rem; border: 1px solid var(--border);
+      transition: border-color .2s, background .2s;
+    }
+    .value-item:hover { border-color: var(--volt); background: var(--mid); }
+    .value-num {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 2.5rem; color: var(--volt); line-height: 1;
+      flex-shrink: 0; width: 50px;
+    }
+    .value-content h4 { font-family: 'Bebas Neue', sans-serif; font-size: 1.1rem; letter-spacing: .05em; margin-bottom: .4rem; }
+    .value-content p { font-size: .82rem; color: var(--muted); line-height: 1.7; }
+
+    .accordion-item { border: 1px solid var(--border); margin-bottom: .5rem; }
+    .accordion-btn {
+      width: 100%; background: none; border: none; color: var(--white);
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 1.2rem 1.5rem;
+      font-family: 'DM Sans', sans-serif; font-size: .9rem; font-weight: 400;
+      text-align: left; transition: background .2s;
+    }
+    .accordion-btn:hover { background: var(--mid); }
+    .accordion-btn .icon { color: var(--volt); font-size: 1.2rem; transition: transform .3s; }
+    .accordion-item.open .accordion-btn .icon { transform: rotate(45deg); }
+    .accordion-body {
+      max-height: 0; overflow: hidden;
+      transition: max-height .4s var(--ease);
+    }
+    .accordion-body-inner { padding: 0 1.5rem 1.5rem; font-size: .85rem; color: var(--muted); line-height: 1.75; }
+
+    @media (max-width: 900px) {
+      .about-hero-inner { grid-template-columns: 1fr; gap: 2rem; }
+      .big-number { display: none; }
+      .mission-grid { grid-template-columns: 1fr; }
+      .timeline::before { left: 20px; }
+      .tl-item { grid-template-columns: 1fr; gap: 1.5rem; }
+      .tl-item:nth-child(even) .tl-content { order: unset; }
+      .tl-item:nth-child(even) .tl-year-wrap { order: unset; text-align: left; }
+      .team-grid { grid-template-columns: 1fr 1fr; }
+    }
+    @media (max-width: 600px) { .team-grid { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+<div class="cursor" id="cursor"></div>
+<div class="toast" id="toast"></div>
+
+<nav class="nav">
+  <a class="nav-logo" href="index.html"><span class="accent">VOLT</span>RIDE</a>
+  <ul class="nav-links">
+    <li><a href="index.html">Home</a></li>
+    <li><a href="bikes.html">Bikes</a></li>
+    <li><a href="about.html" class="active">About</a></li>
+    <li><a href="contact.html">Contact</a></li>
+  </ul>
+  <div class="nav-actions">
+    <button class="nav-cart-btn" onclick="openCart()">Cart <span class="cart-badge" id="cartCount">0</span></button>
+    <button class="nav-hamburger" onclick="openMobileMenu()"><span></span><span></span><span></span></button>
+  </div>
+</nav>
+<div class="mobile-menu" id="mobileMenu"><button class="mobile-close" onclick="closeMobileMenu()">✕</button><a href="index.html" onclick="closeMobileMenu()">Home</a><a href="bikes.html" onclick="closeMobileMenu()">Bikes</a><a href="about.html" onclick="closeMobileMenu()">About</a><a href="contact.html" onclick="closeMobileMenu()">Contact</a></div>
+<div class="cart-overlay" id="cartOverlay" onclick="closeCart()"></div>
+<div class="cart-drawer" id="cartDrawer"><div class="cart-head"><h3>Cart</h3><button class="cart-close" onclick="closeCart()">✕</button></div><div class="cart-body" id="cartBody"></div><div class="cart-foot"><div class="cart-total"><span class="cart-total-label">Total</span><span class="cart-total-price" id="cartTotal">₹0</span></div><button class="btn btn-volt" style="width:100%;justify-content:center" onclick="checkout()">Checkout →</button></div></div>
+
+<div class="page-wrap">
+  <div class="page-hero" style="position:relative;overflow:hidden">
+    <div class="breadcrumb"><a href="index.html">Home</a> / <span>About</span></div>
+    <div class="about-hero-inner">
+      <div>
+        <p class="page-hero-eyebrow anim-fadeup">Our Story</p>
+        <h1 class="page-hero-title anim-fadeup delay-1">Built for <span style="color:var(--volt)">India's Roads.</span></h1>
+        <p class="page-hero-sub anim-fadeup delay-2">VoltRide was born in 2019 from a simple frustration: why should getting around a city be expensive, polluting, and stressful? We set out to build electric bikes that are genuinely outstanding — not just "good for an e-bike."</p>
+        <div style="margin-top:2rem" class="anim-fadeup delay-3">
+          <a href="bikes.html" class="btn btn-volt">Shop the Collection →</a>
+        </div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.5px;background:var(--border)" class="anim-fadein delay-2">
+        <div style="background:var(--mid);padding:2.5rem;text-align:center"><div style="font-family:'Bebas Neue',sans-serif;font-size:3.5rem;color:var(--volt);line-height:1">12K+</div><div style="font-size:.72rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-top:.3rem">Happy Riders</div></div>
+        <div style="background:var(--mid);padding:2.5rem;text-align:center"><div style="font-family:'Bebas Neue',sans-serif;font-size:3.5rem;color:var(--volt);line-height:1">6</div><div style="font-size:.72rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-top:.3rem">Bike Models</div></div>
+        <div style="background:var(--mid);padding:2.5rem;text-align:center"><div style="font-family:'Bebas Neue',sans-serif;font-size:3.5rem;color:var(--volt);line-height:1">28</div><div style="font-size:.72rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-top:.3rem">Cities Served</div></div>
+        <div style="background:var(--mid);padding:2.5rem;text-align:center"><div style="font-family:'Bebas Neue',sans-serif;font-size:3.5rem;color:var(--volt);line-height:1">4.9★</div><div style="font-size:.72rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-top:.3rem">Avg Rating</div></div>
+      </div>
+    </div>
+    <span class="big-number">V</span>
+  </div>
+
+  <!-- MISSION -->
+  <section class="section" style="background:var(--black)">
+    <div class="section-header reveal"><h2 class="section-title">Our <span class="accent">Mission</span></h2></div>
+    <div class="mission-grid reveal">
+      <div class="mission-item"><div class="mission-number">01</div><div class="mission-title">Democratize Electric Mobility</div><p class="mission-text">Make premium electric bikes accessible to every Indian commuter — not just tech enthusiasts. Transparent pricing, no hidden costs, real value.</p></div>
+      <div class="mission-item"><div class="mission-number">02</div><div class="mission-title">Engineer for Indian Roads</div><p class="mission-text">Our bikes are tested on potholed lanes, monsoon-soaked roads, and mountain trails. We build for the real world, not spec sheets.</p></div>
+      <div class="mission-item"><div class="mission-number">03</div><div class="mission-title">Zero Compromise on Safety</div><p class="mission-text">Every battery pack is BMS-protected. Every frame is ISO-certified. Every motor passes 10,000km endurance tests before it reaches you.</p></div>
+      <div class="mission-item"><div class="mission-number">04</div><div class="mission-title">Build a Rider Community</div><p class="mission-text">VoltRide is more than bikes. It's 12,000+ riders sharing routes, tips, and adventures. Join the movement.</p></div>
+    </div>
+  </section>
+
+  <!-- TIMELINE -->
+  <section class="section" style="background:var(--mid)" id="history">
+    <div class="section-header reveal"><h2 class="section-title">Our <span class="accent">Journey</span></h2></div>
+    <div class="timeline reveal">
+      <div class="tl-item">
+        <div class="tl-year-wrap"><div class="tl-year">2019</div><p style="font-size:.8rem;color:var(--muted);margin-top:.3rem">Bengaluru, India</p></div>
+        <div class="tl-content"><h3>The Garage Begins</h3><p>Three engineers, one frustrating commute, and a borrowed workshop. VoltRide's first prototype is assembled in a Koramangala garage.</p></div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-year-wrap"><div class="tl-year">2020</div></div>
+        <div class="tl-content"><h3>First 100 Riders</h3><p>We launch the VOLT URBAN X1 beta. 100 riders sign up in 48 hours. Their feedback reshapes every component we thought was "finished."</p></div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-year-wrap"><div class="tl-year">2022</div></div>
+        <div class="tl-content"><h3>Series A & Scale</h3><p>₹42 crore raised. New manufacturing facility in Pune. Team grows from 8 to 85. The APEX TRAIL PRO launches to instant acclaim.</p></div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-year-wrap"><div class="tl-year">2024</div></div>
+        <div class="tl-content"><h3>10,000 Bikes on Road</h3><p>VoltRide crosses 10,000 bikes sold across 28 Indian cities. The PHANTOM GT-R becomes our halo product. Service centres open in 12 cities.</p></div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-year-wrap"><div class="tl-year">2025</div></div>
+        <div class="tl-content"><h3>The Future</h3><p>Solid-state battery prototypes. Solar charging integration. VoltRide Community App. The ride has only just begun.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TEAM -->
+  <section class="section" id="team">
+    <div class="section-header reveal"><h2 class="section-title">The <span class="accent">Team</span></h2></div>
+    <div class="team-grid reveal">
+      <div class="team-card"><div class="team-avatar">👨‍💼</div><div class="team-name">Rohan Verma</div><div class="team-role">Co-Founder & CEO</div><p class="team-bio">Ex-ISRO engineer. Obsessed with range optimization and terrible puns about batteries.</p></div>
+      <div class="team-card"><div class="team-avatar">👩‍🔧</div><div class="team-name">Kavya Iyer</div><div class="team-role">Co-Founder & CTO</div><p class="team-bio">Materials scientist. Designed our proprietary motor cooling system from scratch.</p></div>
+      <div class="team-card"><div class="team-avatar">👨‍🎨</div><div class="team-name">Aryan Kapoor</div><div class="team-role">Head of Design</div><p class="team-bio">Former Mahindra designer. Every VoltRide frame is both sculpture and engineering.</p></div>
+      <div class="team-card"><div class="team-avatar">👩‍💻</div><div class="team-name">Meera Nair</div><div class="team-role">Head of Product</div><p class="team-bio">Rider of 12,000km on VoltRide prototypes. If it doesn't survive Meera, it doesn't ship.</p></div>
+    </div>
+  </section>
+
+  <!-- VALUES -->
+  <section class="section" style="background:var(--mid)">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:6rem;align-items:start">
+      <div class="reveal">
+        <p class="page-hero-eyebrow" style="margin-bottom:1rem">What We Stand For</p>
+        <h2 class="section-title" style="margin-bottom:2rem">Our <span class="accent">Values</span></h2>
+        <div class="values-list">
+          <div class="value-item"><div class="value-num">01</div><div class="value-content"><h4>Radical Honesty</h4><p>We publish real-world range figures — not cherry-picked lab numbers. Trust is earned, not marketed.</p></div></div>
+          <div class="value-item"><div class="value-num">02</div><div class="value-content"><h4>Relentless Engineering</h4><p>Good enough is never good enough. Every component is questioned, tested, and improved every cycle.</p></div></div>
+          <div class="value-item"><div class="value-num">03</div><div class="value-content"><h4>Rider First</h4><p>Every decision — from bike design to return policies — starts with one question: what's best for the rider?</p></div></div>
+          <div class="value-item"><div class="value-num">04</div><div class="value-content"><h4>Planet Always</h4><p>Zero emissions in use. Recyclable packaging. Carbon-neutral manufacturing by 2027. Not optional.</p></div></div>
+        </div>
+      </div>
+      <div class="reveal">
+        <p class="page-hero-eyebrow" style="margin-bottom:1rem">Common Questions</p>
+        <h2 class="section-title" style="margin-bottom:2rem">FAQ</h2>
+        <div>
+          <div class="accordion-item"><button class="accordion-btn">Do I need a licence to ride? <span class="icon">+</span></button><div class="accordion-body"><div class="accordion-body-inner">Electric bikes with motors under 250W and speed under 25km/h are exempt from licence and registration in India under CMVR rules. Our Urban and Commuter series qualify. Speed and Trail series require a valid driving licence.</div></div></div>
+          <div class="accordion-item"><button class="accordion-btn">How long does the battery last? <span class="icon">+</span></button><div class="accordion-body"><div class="accordion-body-inner">Our batteries are rated for 1,000+ charge cycles before dropping to 80% capacity — roughly 4–5 years of daily riding. After that, they can be recycled through our take-back programme.</div></div></div>
+          <div class="accordion-item"><button class="accordion-btn">Can I ride in rain? <span class="icon">+</span></button><div class="accordion-body"><div class="accordion-body-inner">Yes. All VoltRide bikes carry at least IP54 water resistance. The Urban X1 and Commuter Elite are IP65 rated, meaning they can handle heavy rain. We recommend avoiding deep water submersion.</div></div></div>
+          <div class="accordion-item"><button class="accordion-btn">What does the warranty cover? <span class="icon">+</span></button><div class="accordion-body"><div class="accordion-body-inner">3 years on frame and motor, 2 years on battery, 1 year on electrical components. Normal wear items (tyres, brakes, chain) are not covered but available at cost through our service centres.</div></div></div>
+          <div class="accordion-item"><button class="accordion-btn">Do you offer EMI? <span class="icon">+</span></button><div class="accordion-body"><div class="accordion-body-inner">Yes — 0% EMI for 6 months via major credit cards, and 9–24 month EMI options via Bajaj Finserv, HDFC, and ICICI Bank. We also accept Bike loans through our NBFC partners.</div></div></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- REVIEWS -->
+  <section class="section" id="reviews">
+    <div class="section-header reveal"><h2 class="section-title">Rider <span class="accent">Reviews</span></h2></div>
+    <div class="testi-grid reveal">
+      <div class="testi-card"><div class="testi-stars">★★★★★</div><p class="testi-text">"Switched from a car to the X1 for my daily Bengaluru commute. Best decision I've made. I arrive at work energised, not drained."</p><div class="testi-author">Arjun Mehta, Bengaluru</div><div class="testi-model">VOLT URBAN X1</div></div>
+      <div class="testi-card"><div class="testi-stars">★★★★★</div><p class="testi-text">"The Trail Pro handles every terrain I've thrown at it. Nandi Hills, Coorg, Hampi — it just eats roads."</p><div class="testi-author">Priya Sharma, Mumbai</div><div class="testi-model">APEX TRAIL PRO</div></div>
+      <div class="testi-card"><div class="testi-stars">★★★★★</div><p class="testi-text">"Customer service team drove 45 minutes to fix a minor calibration issue the next morning. That's a company that cares."</p><div class="testi-author">Rahul Nair, Hyderabad</div><div class="testi-model">STORMRIDER S3</div></div>
+      <div class="testi-card"><div class="testi-stars">★★★★☆</div><p class="testi-text">"The GT-R is genuinely fast — and a head-turner. Build quality is exceptional. Only wish came in more colour options."</p><div class="testi-author">Siddharth Joshi, Pune</div><div class="testi-model">PHANTOM GT-R</div></div>
+      <div class="testi-card"><div class="testi-stars">★★★★★</div><p class="testi-text">"Running a small tiffin delivery service with the Cargo C1. Fully paid for itself in fuel savings within 8 months."</p><div class="testi-author">Lakshmi Devi, Chennai</div><div class="testi-model">HAULER CARGO C1</div></div>
+      <div class="testi-card"><div class="testi-stars">★★★★★</div><p class="testi-text">"The app is excellent. I love being able to track my carbon savings — I've offset over 400kg of CO₂ this year."</p><div class="testi-author">Vikram Singh, Delhi</div><div class="testi-model">COMMUTER ELITE E2</div></div>
+    </div>
+  </section>
+
+  <div class="newsletter-strip">
+    <div><h3 class="nl-title">Join the <span class="text-volt">Ride</span></h3><p class="nl-sub">12,000+ riders get our monthly newsletter.</p></div>
+    <div class="nl-form"><input class="nl-input" type="email" id="nlEmail" placeholder="your@email.com"/><button class="nl-btn" onclick="subscribe('nlEmail')">Subscribe</button></div>
+  </div>
+
+  <footer class="footer">
+    <div class="footer-top">
+      <div class="footer-brand"><a class="nav-logo" href="index.html"><span class="accent">VOLT</span>RIDE</a><p>Premium electric bicycles for the modern Indian rider.</p></div>
+      <div class="footer-col"><h4>Bikes</h4><ul><li><a href="bikes.html?cat=urban">Urban</a></li><li><a href="bikes.html?cat=trail">Trail</a></li><li><a href="bikes.html?cat=speed">Speed</a></li><li><a href="bikes.html?cat=cargo">Cargo</a></li></ul></div>
+      <div class="footer-col"><h4>Support</h4><ul><li><a href="contact.html">Contact</a></li><li><a href="#">Warranty</a></li><li><a href="#">FAQs</a></li></ul></div>
+      <div class="footer-col"><h4>Company</h4><ul><li><a href="about.html">About</a></li><li><a href="#">Blog</a></li><li><a href="#">Press</a></li></ul></div>
+    </div>
+    <div class="footer-bottom"><p>© 2025 VoltRide Pvt. Ltd.</p><p><a href="#">Privacy</a> · <a href="#">Terms</a></p></div>
+  </footer>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
