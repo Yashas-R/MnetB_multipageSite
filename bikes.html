@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>VoltRide — All Bikes</title>
+  <link rel="stylesheet" href="style.css"/>
+  <style>
+    .sort-bar {
+      display: flex; align-items: center; gap: 1rem;
+      padding: 1rem 3rem; border-bottom: 1px solid var(--border);
+      background: var(--black);
+    }
+    .sort-label { font-size: .72rem; color: var(--muted); letter-spacing: .08em; text-transform: uppercase; }
+    .sort-select {
+      background: var(--mid); border: 1px solid var(--border);
+      color: var(--white); font-family: 'DM Sans',sans-serif; font-size: .8rem;
+      padding: .4rem .8rem; outline: none; cursor: none;
+    }
+    .sort-select:focus { border-color: var(--volt); }
+    .sort-select option { background: #1a1a1a; }
+
+    .bike-compare-bar {
+      position: fixed; bottom: 0; left: 0; right: 0;
+      background: var(--mid); border-top: 2px solid var(--volt);
+      padding: 1rem 3rem;
+      display: flex; align-items: center; justify-content: space-between;
+      z-index: 500;
+      transform: translateY(100%);
+      transition: transform .3s var(--ease);
+    }
+    .bike-compare-bar.visible { transform: translateY(0); }
+    .compare-items { display: flex; gap: 1rem; }
+    .compare-slot {
+      width: 140px; height: 40px;
+      border: 1px dashed rgba(244,241,235,.2);
+      display: flex; align-items: center; justify-content: center;
+      font-size: .7rem; color: var(--muted);
+    }
+    .compare-slot.filled { border-color: var(--volt); color: var(--white); font-size: .72rem; text-align: center; padding: 0 .5rem; }
+
+    .product-card .compare-check {
+      position: absolute; top: 1rem; right: 1rem;
+      width: 20px; height: 20px;
+      border: 1px solid var(--border);
+      background: var(--black);
+      display: flex; align-items: center; justify-content: center;
+      font-size: .7rem; cursor: none;
+      transition: all .2s;
+      z-index: 10;
+    }
+    .product-card .compare-check.checked { background: var(--volt); border-color: var(--volt); color: var(--black); }
+
+    @media (max-width: 900px) {
+      .sort-bar { padding: 1rem 1.5rem; flex-wrap: wrap; }
+      .bike-compare-bar { padding: 1rem 1.5rem; }
+      .compare-items { gap: .5rem; }
+      .compare-slot { width: 100px; }
+    }
+  </style>
+</head>
+<body>
+<div class="cursor" id="cursor"></div>
+<div class="toast" id="toast"></div>
+
+<nav class="nav">
+  <a class="nav-logo" href="index.html"><span class="accent">VOLT</span>RIDE</a>
+  <ul class="nav-links">
+    <li><a href="index.html">Home</a></li>
+    <li><a href="bikes.html" class="active">Bikes</a></li>
+    <li><a href="about.html">About</a></li>
+    <li><a href="contact.html">Contact</a></li>
+  </ul>
+  <div class="nav-actions">
+    <button class="nav-cart-btn" onclick="openCart()">Cart <span class="cart-badge" id="cartCount">0</span></button>
+    <button class="nav-hamburger" onclick="openMobileMenu()"><span></span><span></span><span></span></button>
+  </div>
+</nav>
+
+<div class="mobile-menu" id="mobileMenu">
+  <button class="mobile-close" onclick="closeMobileMenu()">✕</button>
+  <a href="index.html" onclick="closeMobileMenu()">Home</a>
+  <a href="bikes.html" onclick="closeMobileMenu()">Bikes</a>
+  <a href="about.html" onclick="closeMobileMenu()">About</a>
+  <a href="contact.html" onclick="closeMobileMenu()">Contact</a>
+</div>
+
+<div class="cart-overlay" id="cartOverlay" onclick="closeCart()"></div>
+<div class="cart-drawer" id="cartDrawer">
+  <div class="cart-head"><h3>Cart</h3><button class="cart-close" onclick="closeCart()">✕</button></div>
+  <div class="cart-body" id="cartBody"></div>
+  <div class="cart-foot">
+    <div class="cart-total"><span class="cart-total-label">Total</span><span class="cart-total-price" id="cartTotal">₹0</span></div>
+    <button class="btn btn-volt" style="width:100%;justify-content:center" onclick="checkout()">Checkout →</button>
+    <br/><a href="cart.html" style="display:block;text-align:center;margin-top:.8rem;font-size:.75rem;color:var(--muted)">View full cart</a>
+  </div>
+</div>
+
+<div class="page-wrap">
+  <!-- PAGE HERO -->
+  <div class="page-hero">
+    <div class="breadcrumb"><a href="index.html">Home</a> / <span>Bikes</span></div>
+    <p class="page-hero-eyebrow">Our Collection</p>
+    <h1 class="page-hero-title anim-fadeup">All <span style="color:var(--volt)">Bikes</span></h1>
+    <p class="page-hero-sub anim-fadeup delay-1">From nimble city commuters to rugged trail blazers — find your perfect electric ride.</p>
+  </div>
+
+  <!-- FILTER BAR -->
+  <div class="filter-bar">
+    <button class="filter-chip active" data-filter="all">All</button>
+    <button class="filter-chip" data-filter="urban">Urban</button>
+    <button class="filter-chip" data-filter="trail">Trail</button>
+    <button class="filter-chip" data-filter="speed">Speed</button>
+    <button class="filter-chip" data-filter="cargo">Cargo</button>
+    <button class="filter-chip" data-filter="commuter">Commuter</button>
+    <span class="filter-count" id="filterCount">6 bikes</span>
+  </div>
+
+  <!-- SORT BAR -->
+  <div class="sort-bar">
+    <span class="sort-label">Sort by</span>
+    <select class="sort-select" id="sortSelect" onchange="sortBikes()">
+      <option value="default">Featured</option>
+      <option value="price-asc">Price: Low to High</option>
+      <option value="price-desc">Price: High to Low</option>
+      <option value="range">Range</option>
+    </select>
+  </div>
+
+  <!-- GRID -->
+  <section class="section" style="padding-top:3rem">
+    <div class="products-grid cols-4" id="bikesGrid">
+
+      <div class="product-card" data-category="urban" data-price="89999" data-range="60">
+        <button class="compare-check" onclick="toggleCompare(this,'VOLT URBAN X1')">✓</button>
+        <span class="tag tag-filled-volt" style="margin-bottom:1rem">New</span>
+        <div class="card-img">
+          <svg viewBox="0 0 260 160" width="200" fill="none"><circle cx="65" cy="110" r="42" stroke="var(--volt)" stroke-width="5"/><circle cx="65" cy="110" r="6" fill="var(--volt)"/><circle cx="195" cy="110" r="42" stroke="var(--volt)" stroke-width="5"/><circle cx="195" cy="110" r="6" fill="var(--volt)"/><path d="M65 110 L128 38 L180 110" stroke="var(--volt)" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" fill="none"/><path d="M128 38 L195 110" stroke="#555" stroke-width="3"/><path d="M128 38 L115 110" stroke="#444" stroke-width="3"/><rect x="100" y="72" width="50" height="22" rx="4" fill="#111" stroke="var(--volt)" stroke-width="1.5"/><rect x="106" y="77" width="9" height="12" rx="1.5" fill="var(--volt)"/><rect x="118" y="77" width="9" height="12" rx="1.5" fill="var(--volt)" opacity=".6"/><rect x="130" y="77" width="9" height="12" rx="1.5" fill="#222"/><path d="M175 68 L195 68 L200 56" stroke="#666" stroke-width="4" stroke-linecap="round" fill="none"/><rect x="107" y="30" width="40" height="9" rx="4.5" fill="#1a1a1a"/></svg>
+        </div>
+        <div class="card-name">VOLT URBAN X1</div>
+        <div class="card-spec">250W Hub Motor · 60km · 25kg · IP65</div>
+        <div class="card-footer">
+          <div class="card-price">₹89,999</div>
+          <button class="card-add btn" onclick="VoltCart.add('VOLT URBAN X1',89999); showToast('⚡ Added to cart!')">+</button>
+        </div>
+      </div>
+
+      <div class="product-card" data-category="trail" data-price="139999" data-range="80">
+        <button class="compare-check" onclick="toggleCompare(this,'APEX TRAIL PRO')">✓</button>
+        <span class="tag tag-orange" style="margin-bottom:1rem">Trail</span>
+        <div class="card-img">
+          <svg viewBox="0 0 260 160" width="200" fill="none"><circle cx="65" cy="110" r="42" stroke="#ff9500" stroke-width="5"/><circle cx="65" cy="110" r="6" fill="#ff9500"/><circle cx="195" cy="110" r="42" stroke="#ff9500" stroke-width="5"/><circle cx="195" cy="110" r="6" fill="#ff9500"/><path d="M65 110 L128 42 L180 110" stroke="#ff9500" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" fill="none"/><path d="M128 42 L195 110" stroke="#555" stroke-width="3"/><path d="M128 42 L113 110" stroke="#444" stroke-width="3.5"/><rect x="100" y="72" width="50" height="22" rx="4" fill="#111" stroke="#ff9500" stroke-width="1.5"/><rect x="106" y="77" width="9" height="12" rx="1.5" fill="#ff9500"/><rect x="118" y="77" width="9" height="12" rx="1.5" fill="#ff9500" opacity=".5"/><rect x="130" y="77" width="9" height="12" rx="1.5" fill="#222"/><path d="M175 62 L195 68 L202 52" stroke="#666" stroke-width="5" stroke-linecap="round" fill="none"/><rect x="107" y="34" width="42" height="10" rx="5" fill="#1a1a1a"/><line x1="185" y1="72" x2="188" y2="94" stroke="#444" stroke-width="2.5"/><line x1="200" y1="72" x2="203" y2="94" stroke="#444" stroke-width="2.5"/></svg>
+        </div>
+        <div class="card-name">APEX TRAIL PRO</div>
+        <div class="card-spec">500W Mid-Drive · 80km · 28kg · Air Fork</div>
+        <div class="card-footer">
+          <div class="card-price" style="color:#ff9500">₹1,39,999</div>
+          <button class="card-add btn" style="background:#ff9500" onclick="VoltCart.add('APEX TRAIL PRO',139999,'#ff9500','⛰️'); showToast('⛰️ Added to cart!')">+</button>
+        </div>
+      </div>
+
+      <div class="product-card" data-category="speed" data-price="189999" data-range="70">
+        <button class="compare-check" onclick="toggleCompare(this,'STORMRIDER S3')">✓</button>
+        <span class="tag tag-blue" style="margin-bottom:1rem">Speed</span>
+        <div class="card-img">
+          <svg viewBox="0 0 260 160" width="200" fill="none"><circle cx="65" cy="110" r="42" stroke="#00c8ff" stroke-width="5"/><circle cx="65" cy="110" r="6" fill="#00c8ff"/><circle cx="195" cy="110" r="42" stroke="#00c8ff" stroke-width="5"/><circle cx="195" cy="110" r="6" fill="#00c8ff"/><path d="M65 110 L128 35 L178 110" stroke="#00c8ff" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" fill="none"/><path d="M128 35 L195 110" stroke="#555" stroke-width="3"/><path d="M128 35 L116 110" stroke="#444" stroke-width="3"/><rect x="100" y="70" width="55" height="22" rx="4" fill="#111" stroke="#00c8ff" stroke-width="1.5"/><rect x="106" y="76" width="9" height="10" rx="1.5" fill="#00c8ff"/><rect x="118" y="76" width="9" height="10" rx="1.5" fill="#00c8ff" opacity=".7"/><rect x="130" y="76" width="9" height="10" rx="1.5" fill="#00c8ff" opacity=".35"/><rect x="142" y="76" width="9" height="10" rx="1.5" fill="#222"/><path d="M178 60 L200 65 L205 48" stroke="#888" stroke-width="3.5" stroke-linecap="round" fill="none"/><rect x="108" y="26" width="38" height="10" rx="5" fill="#1a1a1a"/></svg>
+        </div>
+        <div class="card-name">STORMRIDER S3</div>
+        <div class="card-spec">750W Motor · 70km · 24kg · Carbon Fork</div>
+        <div class="card-footer">
+          <div class="card-price" style="color:#00c8ff">₹1,89,999</div>
+          <button class="card-add btn" style="background:#00c8ff" onclick="VoltCart.add('STORMRIDER S3',189999,'#00c8ff','🌩️'); showToast('🌩️ Added to cart!')">+</button>
+        </div>
+      </div>
+
+      <div class="product-card" data-category="cargo" data-price="109999" data-range="55">
+        <button class="compare-check" onclick="toggleCompare(this,'HAULER CARGO C1')">✓</button>
+        <span class="tag tag-volt" style="margin-bottom:1rem">Cargo</span>
+        <div class="card-img" style="font-size:4.5rem;color:var(--volt)">📦</div>
+        <div class="card-name">HAULER CARGO C1</div>
+        <div class="card-spec">400W Motor · 55km · 35kg · 100kg Load</div>
+        <div class="card-footer">
+          <div class="card-price">₹1,09,999</div>
+          <button class="card-add btn" onclick="VoltCart.add('HAULER CARGO C1',109999); showToast('⚡ Added!')">+</button>
+        </div>
+      </div>
+
+      <div class="product-card" data-category="commuter" data-price="99999" data-range="75">
+        <button class="compare-check" onclick="toggleCompare(this,'COMMUTER ELITE E2')">✓</button>
+        <span class="tag tag-filled-volt" style="margin-bottom:1rem">Bestseller</span>
+        <div class="card-img" style="font-size:4.5rem;color:var(--purple)">🚲</div>
+        <div class="card-name">COMMUTER ELITE E2</div>
+        <div class="card-spec">350W Motor · 75km · 22kg · App Connected</div>
+        <div class="card-footer">
+          <div class="card-price" style="color:var(--purple)">₹99,999</div>
+          <button class="card-add btn" style="background:var(--purple)" onclick="VoltCart.add('COMMUTER ELITE E2',99999,'var(--purple)','🚲'); showToast('🚲 Added!')">+</button>
+        </div>
+      </div>
+
+      <div class="product-card" data-category="speed" data-price="249999" data-range="100">
+        <button class="compare-check" onclick="toggleCompare(this,'PHANTOM GT-R')">✓</button>
+        <span class="tag tag-red" style="margin-bottom:1rem">Limited</span>
+        <div class="card-img" style="font-size:4.5rem;color:var(--red)">🏎️</div>
+        <div class="card-name">PHANTOM GT-R</div>
+        <div class="card-spec">1000W Motor · 100km · 26kg · Sport Mode</div>
+        <div class="card-footer">
+          <div class="card-price" style="color:var(--red)">₹2,49,999</div>
+          <button class="card-add btn" style="background:var(--red)" onclick="VoltCart.add('PHANTOM GT-R',249999,'var(--red)','🏎️'); showToast('🏎️ Added!')">+</button>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- NEWSLETTER -->
+  <div class="newsletter-strip">
+    <div><h3 class="nl-title">Stay in the <span class="text-volt">Loop</span></h3><p class="nl-sub">New arrivals, exclusive drops, ride tips.</p></div>
+    <div class="nl-form"><input class="nl-input" type="email" id="nlEmail" placeholder="your@email.com"/><button class="nl-btn" onclick="subscribe('nlEmail')">Subscribe</button></div>
+  </div>
+
+  <footer class="footer">
+    <div class="footer-top">
+      <div class="footer-brand"><a class="nav-logo" href="index.html"><span class="accent">VOLT</span>RIDE</a><p>Premium electric bicycles for the modern Indian rider.</p></div>
+      <div class="footer-col"><h4>Bikes</h4><ul><li><a href="bikes.html?cat=urban">Urban</a></li><li><a href="bikes.html?cat=trail">Trail</a></li><li><a href="bikes.html?cat=speed">Speed</a></li><li><a href="bikes.html?cat=cargo">Cargo</a></li></ul></div>
+      <div class="footer-col"><h4>Support</h4><ul><li><a href="contact.html">Contact</a></li><li><a href="#">Warranty</a></li><li><a href="#">FAQs</a></li></ul></div>
+      <div class="footer-col"><h4>Company</h4><ul><li><a href="about.html">About</a></li><li><a href="#">Blog</a></li><li><a href="#">Press</a></li></ul></div>
+    </div>
+    <div class="footer-bottom"><p>© 2025 VoltRide Pvt. Ltd.</p><p><a href="#">Privacy</a> · <a href="#">Terms</a></p></div>
+  </footer>
+</div>
+
+<!-- COMPARE BAR -->
+<div class="bike-compare-bar" id="compareBar">
+  <div><p style="font-size:.75rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)">Compare bikes</p><div class="compare-items" id="compareSlots"><div class="compare-slot">Slot 1</div><div class="compare-slot">Slot 2</div></div></div>
+  <div style="display:flex;gap:1rem;align-items:center">
+    <button class="btn btn-outline btn-sm" onclick="clearCompare()">Clear</button>
+    <button class="btn btn-volt btn-sm" onclick="showToast('Compare feature coming soon!')">Compare Now</button>
+  </div>
+</div>
+
+<script src="script.js"></script>
+<script>
+// Sort
+function sortBikes() {
+  const v = document.getElementById('sortSelect').value;
+  const grid = document.getElementById('bikesGrid');
+  const cards = [...grid.querySelectorAll('.product-card')];
+  cards.sort((a,b) => {
+    if (v === 'price-asc') return +a.dataset.price - +b.dataset.price;
+    if (v === 'price-desc') return +b.dataset.price - +a.dataset.price;
+    if (v === 'range') return +b.dataset.range - +a.dataset.range;
+    return 0;
+  });
+  cards.forEach(c => grid.appendChild(c));
+}
+
+// Compare
+let compareList = [];
+function toggleCompare(btn, name) {
+  if (btn.classList.contains('checked')) {
+    btn.classList.remove('checked');
+    compareList = compareList.filter(n => n !== name);
+  } else {
+    if (compareList.length >= 2) { showToast('Max 2 bikes for compare'); return; }
+    btn.classList.add('checked');
+    compareList.push(name);
+  }
+  updateCompareBar();
+}
+function updateCompareBar() {
+  const bar = document.getElementById('compareBar');
+  const slots = document.getElementById('compareSlots');
+  bar.classList.toggle('visible', compareList.length > 0);
+  slots.innerHTML = [0,1].map(i => compareList[i]
+    ? `<div class="compare-slot filled">${compareList[i]}</div>`
+    : `<div class="compare-slot">Slot ${i+1}</div>`
+  ).join('');
+}
+function clearCompare() {
+  compareList = [];
+  document.querySelectorAll('.compare-check').forEach(b => b.classList.remove('checked'));
+  updateCompareBar();
+}
+
+// URL filter param
+window.addEventListener('DOMContentLoaded', () => {
+  const cat = new URLSearchParams(window.location.search).get('cat');
+  if (cat) {
+    const chip = document.querySelector(`.filter-chip[data-filter="${cat}"]`);
+    if (chip) chip.click();
+  }
+});
+</script>
+</body>
+</html>
