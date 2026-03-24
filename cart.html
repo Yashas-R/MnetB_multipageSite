@@ -20,196 +20,408 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>VoltRide — Checkout</title>
-  <link rel="stylesheet" href="style.css"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+
+  <!-- Google Tag Manager — replace GTM-XXXXXXX with your container ID -->
+  <!--
+  <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+  new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+  j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+  'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+  })(window,document,'script','dataLayer','GTM-XXXXXXX');</script>
+  -->
+
   <style>
-    .checkout-stepper {
-      display: flex; align-items: center;
-      padding: 2rem 3rem;
+    :root {
+      --black:  #090909;
+      --white:  #f4f1eb;
+      --volt:   #c8f135;
+      --volt2:  #d8ff45;
+      --mid:    #141414;
+      --dark:   #111;
+      --border: rgba(244,241,235,0.09);
+      --muted:  rgba(244,241,235,0.45);
+      --red:    #f43f5e;
+      --green:  #4ade80;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      background: var(--black);
+      color: var(--white);
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 300;
+      line-height: 1.6;
+      min-height: 100vh;
+    }
+    ::selection { background: var(--volt); color: var(--black); }
+
+    /* ── SCROLLBAR ── */
+    ::-webkit-scrollbar { width: 4px; }
+    ::-webkit-scrollbar-track { background: var(--black); }
+    ::-webkit-scrollbar-thumb { background: var(--volt); }
+
+    /* ══════════════════════════════
+       NAV
+    ══════════════════════════════ */
+    .nav {
+      position: sticky; top: 0; z-index: 100;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 1.1rem 3rem;
+      background: rgba(9,9,9,0.94);
+      backdrop-filter: blur(12px);
       border-bottom: 1px solid var(--border);
+    }
+    .logo {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.55rem; letter-spacing: .14em;
+      color: var(--white); text-decoration: none;
+    }
+    .logo .v { color: var(--volt); }
+    .nav-links { display: flex; gap: 2rem; list-style: none; }
+    .nav-links a {
+      font-size: .75rem; letter-spacing: .1em; text-transform: uppercase;
+      color: var(--muted); text-decoration: none; transition: color .2s;
+    }
+    .nav-links a:hover { color: var(--white); }
+    .nav-back {
+      font-size: .73rem; letter-spacing: .09em; text-transform: uppercase;
+      color: var(--muted); text-decoration: none;
+      display: flex; align-items: center; gap: .35rem;
+      transition: color .2s;
+    }
+    .nav-back:hover { color: var(--volt); }
+
+    /* ══════════════════════════════
+       PAGE SHELL
+    ══════════════════════════════ */
+    .page {
+      max-width: 1080px;
+      margin: 0 auto;
+      padding: 3rem 2rem 6rem;
+    }
+    .eyebrow {
+      font-size: .68rem; letter-spacing: .22em; text-transform: uppercase;
+      color: var(--volt); margin-bottom: .7rem;
+      display: flex; align-items: center; gap: .55rem;
+    }
+    .eyebrow::before { content:''; width:22px; height:1px; background:var(--volt); flex-shrink:0; }
+    .page-title {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(2.8rem, 6vw, 5rem);
+      letter-spacing: .04em; line-height: .92;
+      margin-bottom: 3rem;
+    }
+    .page-title span { color: var(--volt); }
+
+    /* ══════════════════════════════
+       LAYOUT GRID
+    ══════════════════════════════ */
+    .grid {
+      display: grid;
+      grid-template-columns: 1fr 340px;
+      gap: 2.5rem;
+      align-items: start;
+    }
+
+    /* ══════════════════════════════
+       SECTION CARDS
+    ══════════════════════════════ */
+    .card {
+      border: 1px solid var(--border);
+      margin-bottom: 1.8rem;
+    }
+    .card:last-child { margin-bottom: 0; }
+    .card-head {
+      display: flex; align-items: center; gap: .9rem;
+      padding: 1.1rem 1.7rem;
       background: var(--mid);
-      overflow-x: auto;
-      gap: 0;
+      border-bottom: 1px solid var(--border);
     }
-    .step { display: flex; align-items: center; gap: .75rem; flex-shrink: 0; opacity: .35; transition: opacity .3s; }
-    .step.active { opacity: 1; }
-    .step.done   { opacity: .7; }
-    .step-num {
-      width: 32px; height: 32px;
-      border: 2px solid rgba(244,241,235,.2); border-radius: 50%;
+    .step-badge {
+      width: 24px; height: 24px; border-radius: 50%;
+      background: var(--volt); color: var(--black);
+      font-size: .7rem; font-weight: 600;
       display: flex; align-items: center; justify-content: center;
-      font-size: .75rem; font-weight: 500; transition: all .3s; flex-shrink: 0;
+      flex-shrink: 0;
     }
-    .step.active .step-num { border-color: var(--volt); color: var(--volt); }
-    .step.done   .step-num { background: var(--volt); border-color: var(--volt); color: var(--black); }
-    .step-label { font-size: .72rem; letter-spacing: .1em; text-transform: uppercase; white-space: nowrap; }
-    .step-connector { flex: 1; min-width: 40px; height: 1px; background: var(--border); margin: 0 1rem; }
-    .step-connector.done { background: var(--volt); }
-
-    .checkout-wrap {
-      display: grid; grid-template-columns: 1fr 380px;
-      gap: 3rem; align-items: start; padding: 3rem;
+    .card-label {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.05rem; letter-spacing: .07em;
     }
-    .checkout-main { display: flex; flex-direction: column; gap: 2.5rem; }
+    .card-body { padding: 1.7rem; }
 
-    .checkout-panel { border: 1px solid var(--border); overflow: hidden; display: none; }
-    .checkout-panel.active { display: block; }
-    .checkout-panel.done   { display: block; opacity: .6; pointer-events: none; }
+    /* sub-headings inside card */
+    .sub {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: .88rem; letter-spacing: .1em; color: var(--volt);
+      margin-top: 1.4rem; margin-bottom: .85rem;
+      padding-bottom: .4rem;
+      border-bottom: 1px solid var(--border);
+    }
+    .sub:first-child { margin-top: 0; }
 
-    .panel-header {
+    /* ══════════════════════════════
+       FORM FIELDS
+    ══════════════════════════════ */
+    .row-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+    .row-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1rem; }
+
+    .f {
+      display: flex; flex-direction: column; gap: .32rem;
+      margin-bottom: .9rem;
+    }
+    .f:last-child { margin-bottom: 0; }
+    .f.no-mb { margin-bottom: 0; }
+
+    label {
+      font-size: .6rem; letter-spacing: .14em; text-transform: uppercase;
+      color: var(--muted);
+    }
+    .req { color: var(--volt); }
+
+    input[type="text"],
+    input[type="email"],
+    input[type="tel"],
+    input[type="password"],
+    input[type="date"],
+    select,
+    textarea {
+      background: var(--dark);
+      border: 1px solid var(--border);
+      color: var(--white);
+      font-family: 'DM Sans', sans-serif;
+      font-size: .87rem; font-weight: 300;
+      padding: .72rem 1rem;
+      outline: none; width: 100%;
+      transition: border-color .2s;
+      -webkit-appearance: none; appearance: none;
+    }
+    input::placeholder, textarea::placeholder {
+      color: rgba(244,241,235,.16);
+    }
+    input:focus, select:focus, textarea:focus { border-color: var(--volt); }
+    input:required:invalid:not(:placeholder-shown),
+    select:required:invalid:not([value=""]) {
+      border-color: var(--red);
+    }
+    textarea { resize: vertical; min-height: 68px; }
+
+    select {
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='11' height='7' fill='none'%3E%3Cpath d='M1 1l4.5 4.5L10 1' stroke='%23555' stroke-width='1.4'/%3E%3C/svg%3E");
+      background-repeat: no-repeat; background-position: right .9rem center;
+      padding-right: 2.2rem; cursor: pointer;
+    }
+    select option { background: #1a1a1a; color: var(--white); }
+
+    /* phone prefix */
+    .pfx { position: relative; }
+    .pfx-lbl {
+      position: absolute; left: 1rem; top: 50%; transform: translateY(-50%);
+      font-size: .8rem; color: var(--muted); pointer-events: none;
+    }
+    .pfx input { padding-left: 2.3rem; }
+
+    .hint {
+      font-size: .62rem; color: var(--muted); margin-top: .18rem;
+    }
+
+    /* ══════════════════════════════
+       CHECKBOXES
+    ══════════════════════════════ */
+    .checks { display: flex; flex-direction: column; gap: .55rem; }
+    .chk {
+      display: flex; align-items: flex-start; gap: .7rem;
+      font-size: .8rem; color: var(--muted); cursor: pointer;
+    }
+    .chk input[type="checkbox"] {
+      width: 15px; height: 15px; flex-shrink: 0; margin-top: .15rem;
+      accent-color: var(--volt); cursor: pointer;
+    }
+
+    /* ══════════════════════════════
+       PAYMENT OPTIONS
+    ══════════════════════════════ */
+    .pay-options { display: flex; flex-direction: column; gap: 0; }
+
+    .pay-opt {
+      display: flex; align-items: center; gap: 1rem;
+      padding: .95rem 1.2rem;
+      border: 1px solid var(--border);
+      border-top: none;
+      cursor: pointer;
+      transition: border-color .2s, background .2s;
+      position: relative;
+    }
+    .pay-opt:first-child { border-top: 1px solid var(--border); }
+
+    /* highlight selected row purely with CSS :has() */
+    .pay-opt:has(input[type="radio"]:checked) {
+      border-color: var(--volt);
+      background: rgba(200,241,53,0.04);
+      z-index: 1;
+    }
+
+    .pay-opt input[type="radio"] {
+      width: 16px; height: 16px;
+      accent-color: var(--volt);
+      flex-shrink: 0; cursor: pointer;
+    }
+    .pay-ico  { font-size: 1.25rem; flex-shrink: 0; }
+    .pay-info { flex: 1; }
+    .pay-name { font-size: .87rem; font-weight: 500; display: block; }
+    .pay-desc { font-size: .68rem; color: var(--muted); display: block; margin-top: .08rem; }
+    .pay-tag  {
+      font-size: .58rem; letter-spacing: .1em; text-transform: uppercase;
+      padding: .18rem .52rem; background: var(--volt); color: var(--black);
+      font-weight: 600; flex-shrink: 0;
+    }
+
+    /* ─ Card sub-form (CSS-only toggle via :has) ─ */
+    .card-sub {
+      display: none;
+      border: 1px solid var(--border);
+      border-top: none;
+      padding: 1.2rem 1.4rem;
+      background: rgba(200,241,53,0.025);
+      flex-direction: column; gap: .85rem;
+    }
+    .pay-section:has(#pay-card:checked) .card-sub { display: flex; }
+
+    /* ─ UPI sub-form ─ */
+    .upi-sub {
+      display: none;
+      border: 1px solid var(--border);
+      border-top: none;
+      padding: 1.2rem 1.4rem;
+      background: rgba(200,241,53,0.025);
+    }
+    .pay-section:has(#pay-upi:checked) .upi-sub { display: block; }
+
+    /* ══════════════════════════════
+       SECURITY STRIP
+    ══════════════════════════════ */
+    .sec-strip {
+      display: flex; flex-wrap: wrap; gap: 1rem;
+      padding: .9rem 1.1rem;
+      border: 1px solid var(--border);
+      background: rgba(200,241,53,0.02);
+      margin-top: 1.4rem;
+    }
+    .sec-item {
+      display: flex; align-items: center; gap: .35rem;
+      font-size: .67rem; color: var(--muted);
+    }
+
+    /* ══════════════════════════════
+       SUBMIT
+    ══════════════════════════════ */
+    .submit {
+      display: block; width: 100%;
+      background: var(--volt); color: var(--black);
+      border: none;
+      padding: 1rem;
+      font-family: 'DM Sans', sans-serif;
+      font-size: .88rem; font-weight: 500;
+      letter-spacing: .13em; text-transform: uppercase;
+      cursor: pointer;
+      transition: background .2s, transform .15s;
+      margin-top: 1.5rem;
+    }
+    .submit:hover  { background: var(--volt2); transform: translateY(-1px); }
+    .submit:active { transform: translateY(0); }
+
+    .tnc {
+      font-size: .64rem; color: var(--muted);
+      text-align: center; margin-top: .85rem; line-height: 1.65;
+    }
+    .tnc a { color: rgba(244,241,235,.4); text-decoration: underline; }
+
+    /* ══════════════════════════════
+       SIDEBAR — ORDER SUMMARY
+    ══════════════════════════════ */
+    .summary {
+      background: var(--mid);
+      border: 1px solid var(--border);
+      padding: 1.7rem;
+      position: sticky; top: 80px;
+    }
+    .sum-title {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.15rem; letter-spacing: .06em;
+      padding-bottom: 1rem; margin-bottom: 1.1rem;
+      border-bottom: 1px solid var(--border);
+    }
+    .sum-item {
+      display: flex; justify-content: space-between; align-items: flex-start;
+      padding: .5rem 0; gap: 1rem;
+      border-bottom: 1px solid var(--border);
+    }
+    .sum-item:last-of-type { border-bottom: none; }
+    .sum-item-name  { font-size: .8rem; line-height: 1.45; flex: 1; }
+    .sum-item-qty   { font-size: .67rem; color: var(--muted); margin-top: .1rem; }
+    .sum-item-price { font-size: .82rem; color: var(--volt); white-space: nowrap; }
+    .sum-divider    { height: 1px; background: var(--border); margin: 1rem 0; }
+    .sum-row {
+      display: flex; justify-content: space-between;
+      font-size: .8rem; padding: .38rem 0;
+    }
+    .sum-lbl   { color: var(--muted); }
+    .sum-free  { color: var(--green); }
+    .sum-total {
+      display: flex; justify-content: space-between; align-items: baseline;
+      margin-top: .5rem; padding-top: 1rem;
+      border-top: 1px solid var(--border);
+    }
+    .sum-total-lbl {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.05rem; letter-spacing: .05em;
+    }
+    .sum-total-val {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.5rem; color: var(--volt);
+    }
+    .sum-note {
+      font-size: .66rem; color: var(--muted); line-height: 1.65;
+      margin-top: 1rem; padding-top: 1rem; border-top: 1px solid var(--border);
+    }
+    .trust-row {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: .6rem; margin-top: 1.1rem;
+      padding-top: 1.1rem; border-top: 1px solid var(--border);
+    }
+    .trust-item {
+      display: flex; align-items: center; gap: .35rem;
+      font-size: .65rem; color: var(--muted);
+    }
+
+    /* ══════════════════════════════
+       FOOTER
+    ══════════════════════════════ */
+    .footer {
+      background: var(--mid); border-top: 1px solid var(--border);
+      padding: 1.8rem 3rem;
       display: flex; justify-content: space-between; align-items: center;
-      padding: 1.4rem 2rem; background: var(--mid); border-bottom: 1px solid var(--border);
+      flex-wrap: wrap; gap: 1rem;
     }
-    .panel-title { display: flex; align-items: center; gap: 1rem; font-family: 'Bebas Neue', sans-serif; font-size: 1.2rem; letter-spacing: .06em; }
-    .panel-title-num { width: 28px; height: 28px; background: var(--volt); color: var(--black); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: .75rem; font-weight: 600; }
-    .panel-edit { font-size: .72rem; letter-spacing: .1em; text-transform: uppercase; color: var(--volt); background: none; border: none; transition: opacity .2s; }
-    .panel-edit:hover { opacity: .7; }
-    .panel-body { padding: 2rem; }
+    .footer p  { font-size: .7rem; color: rgba(244,241,235,.18); }
+    .footer a  { color: rgba(244,241,235,.28); text-decoration: none; font-size: .7rem; transition: color .2s; }
+    .footer a:hover { color: var(--volt); }
+    .footer-links { display: flex; gap: 1.5rem; }
 
-    .cart-table-head {
-      display: grid; grid-template-columns: 2.5fr 1fr 1.2fr 1fr 36px;
-      gap: 1rem; padding: .8rem 0; border-bottom: 1px solid var(--border);
-      font-size: .65rem; letter-spacing: .12em; text-transform: uppercase; color: var(--muted);
-    }
-    .cart-row {
-      display: grid; grid-template-columns: 2.5fr 1fr 1.2fr 1fr 36px;
-      gap: 1rem; padding: 1.4rem 0; border-bottom: 1px solid var(--border); align-items: center;
-    }
-    .cart-row:last-of-type { border-bottom: none; }
-    .cart-row-product { display: flex; gap: 1rem; align-items: center; }
-    .cart-row-thumb { width: 64px; height: 52px; background: var(--black); border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; font-size: 1.4rem; flex-shrink: 0; }
-    .cart-row-name  { font-size: .88rem; font-weight: 500; }
-    .cart-row-sub   { font-size: .7rem; color: var(--muted); margin-top: .15rem; }
-    .cart-row-price { font-size: .9rem; color: var(--volt); }
-    .qty-control { display: flex; align-items: center; gap: .4rem; }
-    .qty-control button { width: 26px; height: 26px; background: var(--black); border: 1px solid var(--border); color: var(--white); font-size: .85rem; display: flex; align-items: center; justify-content: center; transition: border-color .2s, color .2s; }
-    .qty-control button:hover { border-color: var(--volt); color: var(--volt); }
-    .qty-control span { font-size: .85rem; min-width: 22px; text-align: center; }
-    .remove-btn { background: none; border: none; color: rgba(244,241,235,.2); font-size: .9rem; transition: color .2s; }
-    .remove-btn:hover { color: var(--red); }
-    .cart-actions { display: flex; justify-content: space-between; align-items: center; margin-top: 1.5rem; padding-top: 1.5rem; border-top: 1px solid var(--border); flex-wrap: wrap; gap: .8rem; }
-    .promo-row { display: flex; gap: 0; }
-    .promo-input { width: 180px; background: var(--black); border: 1px solid var(--border); border-right: none; color: var(--white); font-family: 'DM Sans',sans-serif; font-size: .8rem; padding: .6rem .9rem; outline: none; transition: border-color .2s; }
-    .promo-input:focus { border-color: var(--volt); }
-    .promo-input::placeholder { color: rgba(244,241,235,.2); }
-    .promo-apply { background: var(--volt); color: var(--black); border: none; padding: .6rem 1rem; font-family: 'DM Sans',sans-serif; font-size: .72rem; font-weight: 500; letter-spacing: .08em; text-transform: uppercase; transition: background .2s; }
-    .promo-apply:hover { background: var(--volt2); }
-
-    .form-grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1.2rem; }
-    .form-group { display: flex; flex-direction: column; gap: .4rem; }
-    .form-group.span-2 { grid-column: span 2; }
-    .form-label { font-size: .65rem; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); }
-    .form-input, .form-select, .form-textarea { background: var(--black); border: 1px solid var(--border); color: var(--white); font-family: 'DM Sans',sans-serif; font-size: .88rem; padding: .75rem 1rem; outline: none; transition: border-color .25s; appearance: none; width: 100%; }
-    .form-input::placeholder { color: rgba(244,241,235,.2); }
-    .form-input:focus, .form-select:focus, .form-textarea:focus { border-color: var(--volt); }
-    .form-input.error { border-color: var(--red); }
-    .form-error-msg { font-size: .68rem; color: var(--red); display: none; margin-top: .15rem; }
-    .form-error-msg.show { display: block; }
-    .form-select { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' fill='none'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23555' stroke-width='1.5'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 1rem center; padding-right: 2.5rem; }
-    .form-select option { background: #1a1a1a; }
-    .form-hint { font-size: .68rem; color: var(--muted); margin-top: .2rem; }
-    .input-group { position: relative; }
-    .input-prefix { position: absolute; left: 1rem; top: 50%; transform: translateY(-50%); font-size: .85rem; color: var(--muted); pointer-events: none; }
-    .input-group .form-input { padding-left: 2.2rem; }
-
-    .section-divider { font-family: 'Bebas Neue',sans-serif; font-size:1rem; letter-spacing:.08em; color:var(--volt); margin-bottom:1rem; padding-bottom:.5rem; border-bottom:1px solid var(--border); }
-
-    .shipping-table { width: 100%; border-collapse: collapse; font-size: .84rem; }
-    .shipping-table thead tr { border-bottom: 2px solid var(--volt); }
-    .shipping-table th { padding: .85rem 1rem; text-align: left; font-size: .65rem; letter-spacing: .12em; text-transform: uppercase; color: var(--volt); font-weight: 500; background: rgba(200,241,53,.04); }
-    .shipping-table tbody tr { border-bottom: 1px solid var(--border); cursor: none; transition: background .2s; }
-    .shipping-table tbody tr:hover { background: rgba(244,241,235,.02); }
-    .shipping-table tbody tr.selected-row { background: rgba(200,241,53,.06); }
-    .shipping-table td { padding: 1rem; vertical-align: middle; }
-    .shipping-table td:first-child { width: 42px; }
-    .ship-method-name { font-weight: 500; font-size: .88rem; }
-    .ship-method-desc { font-size: .72rem; color: var(--muted); margin-top: .15rem; }
-    .ship-eta { display: inline-block; font-size: .68rem; letter-spacing: .08em; padding: .2rem .6rem; border: 1px solid var(--border); color: var(--muted); }
-    .ship-eta.fast { border-color: var(--volt); color: var(--volt); }
-    .ship-price { font-family: 'Bebas Neue',sans-serif; font-size: 1.1rem; color: var(--volt); }
-    .ship-price.free { color: #4ade80; }
-    .radio-dot { width: 18px; height: 18px; border: 2px solid rgba(244,241,235,.2); border-radius: 50%; display: flex; align-items: center; justify-content: center; transition: border-color .2s; }
-
-    .payment-tabs { display: flex; gap: 0; border-bottom: 1px solid var(--border); margin-bottom: 2rem; overflow-x: auto; }
-    .pay-tab { display: flex; align-items: center; gap: .5rem; background: none; border: none; border-bottom: 2px solid transparent; color: var(--muted); padding: .9rem 1.4rem; font-family: 'DM Sans',sans-serif; font-size: .78rem; letter-spacing: .08em; text-transform: uppercase; white-space: nowrap; margin-bottom: -1px; transition: color .2s, border-color .2s; }
-    .pay-tab:hover { color: var(--white); }
-    .pay-tab.active { color: var(--volt); border-bottom-color: var(--volt); }
-    .pay-panel { display: none; }
-    .pay-panel.active { display: block; }
-    .card-expiry-cvv { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
-    .card-number-wrap { position: relative; }
-    .card-type-icon { position: absolute; right: 1rem; top: 50%; transform: translateY(-50%); font-size: 1.2rem; pointer-events: none; }
-    .upi-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 1rem; margin-bottom: 1.5rem; }
-    .upi-option { border: 1px solid var(--border); padding: 1rem; display: flex; flex-direction: column; align-items: center; gap: .5rem; cursor: none; transition: border-color .2s, background .2s; }
-    .upi-option:hover { border-color: rgba(200,241,53,.3); }
-    .upi-option.selected { border-color: var(--volt); background: rgba(200,241,53,.04); }
-    .upi-logo { font-size: 1.8rem; }
-    .upi-name { font-size: .7rem; letter-spacing: .06em; color: var(--muted); }
-    .netbanking-grid { display: grid; grid-template-columns: repeat(2,1fr); gap: .8rem; margin-bottom: 1.5rem; }
-    .bank-option { border: 1px solid var(--border); padding: .9rem 1rem; display: flex; align-items: center; gap: .8rem; cursor: none; font-size: .84rem; transition: border-color .2s, background .2s; }
-    .bank-option:hover { border-color: rgba(200,241,53,.3); }
-    .bank-option.selected { border-color: var(--volt); background: rgba(200,241,53,.04); }
-    .bank-logo { font-size: 1.3rem; }
-    .emi-plans { display: flex; flex-direction: column; gap: .8rem; margin-bottom: 1.5rem; }
-    .emi-row { display: grid; grid-template-columns: auto 1fr auto auto; gap: 1rem; align-items: center; padding: 1rem; border: 1px solid var(--border); cursor: none; font-size: .84rem; transition: border-color .2s, background .2s; }
-    .emi-row:hover { border-color: rgba(200,241,53,.3); }
-    .emi-row.selected { border-color: var(--volt); background: rgba(200,241,53,.04); }
-    .emi-months { font-family: 'Bebas Neue',sans-serif; font-size: 1.4rem; color: var(--volt); line-height: 1; text-align: center; }
-    .emi-months small { display: block; font-family: 'DM Sans',sans-serif; font-size: .62rem; color: var(--muted); font-weight: 300; }
-    .emi-detail { font-size: .82rem; }
-    .emi-detail-sub { font-size: .7rem; color: var(--muted); }
-    .emi-int { font-size: .72rem; }
-    .emi-int.zero { color: #4ade80; }
-    .emi-int.interest { color: var(--orange); }
-    .emi-emi { font-family: 'Bebas Neue',sans-serif; font-size: 1.1rem; text-align: right; }
-    .cod-note { background: rgba(244,241,235,.03); border: 1px solid var(--border); padding: 1.5rem; display: flex; gap: 1rem; align-items: flex-start; }
-    .cod-icon { font-size: 1.8rem; flex-shrink: 0; }
-    .cod-text h4 { font-size: .9rem; font-weight: 500; margin-bottom: .3rem; }
-    .cod-text p  { font-size: .8rem; color: var(--muted); line-height: 1.65; }
-    .security-strip { display: flex; gap: 1.5rem; align-items: center; margin-top: 1.5rem; padding: 1rem; border: 1px solid var(--border); background: rgba(200,241,53,.03); flex-wrap: wrap; }
-    .sec-item { display: flex; gap: .5rem; align-items: center; font-size: .72rem; color: var(--muted); }
-    .sec-item span:first-child { font-size: 1rem; }
-
-    .order-summary { background: var(--mid); border: 1px solid var(--border); padding: 2rem; position: sticky; top: 100px; }
-    .summary-title { font-family: 'Bebas Neue',sans-serif; font-size: 1.3rem; letter-spacing: .06em; margin-bottom: 1.5rem; padding-bottom: 1rem; border-bottom: 1px solid var(--border); }
-    .summary-items { display: flex; flex-direction: column; gap: .8rem; margin-bottom: 1.2rem; }
-    .summary-item { display: flex; gap: .8rem; align-items: center; }
-    .summary-item-thumb { width: 44px; height: 36px; background: var(--black); border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; font-size: 1rem; flex-shrink: 0; }
-    .summary-item-name  { font-size: .78rem; flex: 1; }
-    .summary-item-qty   { font-size: .65rem; color: var(--muted); }
-    .summary-item-price { font-size: .82rem; color: var(--volt); white-space: nowrap; }
-    .summary-divider    { height: 1px; background: var(--border); margin: 1rem 0; }
-    .summary-row { display: flex; justify-content: space-between; padding: .4rem 0; font-size: .82rem; }
-    .summary-label { color: var(--muted); }
-    .summary-row.total { margin-top: .5rem; padding-top: 1rem; border-top: 1px solid var(--border); }
-    .summary-row.total .s-lbl { font-family: 'Bebas Neue',sans-serif; font-size: 1.1rem; letter-spacing: .05em; }
-    .summary-row.total .s-val { font-family: 'Bebas Neue',sans-serif; font-size: 1.5rem; color: var(--volt); }
-    .savings-note { background: rgba(74,222,128,.08); border: 1px solid rgba(74,222,128,.2); padding: .7rem 1rem; margin-top: 1rem; font-size: .72rem; color: #4ade80; }
-
-    .empty-cart { text-align: center; padding: 6rem 2rem; grid-column: 1/-1; }
-    .empty-cart-icon { font-size: 4rem; margin-bottom: 1.5rem; opacity: .3; }
-    .empty-cart h2 { font-family: 'Bebas Neue',sans-serif; font-size: 2.5rem; letter-spacing: .05em; margin-bottom: 1rem; }
-    .empty-cart p  { color: var(--muted); margin-bottom: 2rem; }
-
-    .confirm-screen { text-align: center; padding: 5rem 2rem; display: none; }
-    .confirm-screen.show { display: block; }
-    .confirm-check { width: 80px; height: 80px; background: var(--volt); color: var(--black); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 2rem; margin: 0 auto 2rem; }
-    .confirm-order-id { font-family: 'Bebas Neue',sans-serif; font-size: 1.2rem; color: var(--volt); letter-spacing: .15em; margin-bottom: .5rem; }
-    .confirm-title { font-family: 'Bebas Neue',sans-serif; font-size: 3rem; letter-spacing: .05em; margin-bottom: 1rem; }
-    .confirm-sub { font-size: .9rem; color: var(--muted); max-width: 420px; margin: 0 auto 2.5rem; line-height: 1.7; }
-
-    @media (max-width: 1000px) { .checkout-wrap { grid-template-columns: 1fr; padding: 2rem 1.5rem; } .order-summary { position: static; } }
-    @media (max-width: 700px) {
-      .checkout-stepper { padding: 1.2rem 1.5rem; }
-      .step-label { display: none; }
-      .cart-table-head { display: none; }
-      .cart-row { grid-template-columns: 1fr; }
-      .form-grid-2 { grid-template-columns: 1fr; }
-      .form-group.span-2 { grid-column: span 1; }
-      .upi-grid { grid-template-columns: 1fr 1fr; }
-      .netbanking-grid { grid-template-columns: 1fr; }
-      .emi-row { grid-template-columns: auto 1fr; }
-      .emi-int, .emi-emi { display: none; }
-      .shipping-table th:nth-child(4), .shipping-table td:nth-child(4) { display: none; }
+    /* ══════════════════════════════
+       RESPONSIVE
+    ══════════════════════════════ */
+    @media (max-width: 820px) {
+      .nav { padding: 1rem 1.4rem; }
+      .nav-links { display: none; }
+      .page { padding: 2rem 1.2rem 4rem; }
+      .grid { grid-template-columns: 1fr; }
+      .summary { position: static; order: -1; }
+      .row-2, .row-3 { grid-template-columns: 1fr; }
+      .footer { padding: 1.5rem; flex-direction: column; align-items: flex-start; gap: .7rem; }
     }
   </style>
 </head>
@@ -218,697 +430,468 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-PG5LNXJS"
 height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 <!-- End Google Tag Manager (noscript) -->
-<div class="cursor" id="cursor"></div>
-<div class="toast" id="toast"></div>
 
+<!-- ─── NAV ─── -->
 <nav class="nav">
-  <a class="nav-logo" href="index.html"><span class="accent">VOLT</span>RIDE</a>
+  <a class="logo" href="index.html"><span class="v">VOLT</span>RIDE</a>
   <ul class="nav-links">
     <li><a href="index.html">Home</a></li>
     <li><a href="bikes.html">Bikes</a></li>
     <li><a href="about.html">About</a></li>
     <li><a href="contact.html">Contact</a></li>
   </ul>
-  <div class="nav-actions">
-    <button class="nav-cart-btn" onclick="openCart()">Cart <span class="cart-badge" id="cartCount">0</span></button>
-    <button class="nav-hamburger" onclick="openMobileMenu()"><span></span><span></span><span></span></button>
-  </div>
+  <a class="nav-back" href="bikes.html">&#8592; Continue Shopping</a>
 </nav>
-<div class="mobile-menu" id="mobileMenu">
-  <button class="mobile-close" onclick="closeMobileMenu()">&#x2715;</button>
-  <a href="index.html" onclick="closeMobileMenu()">Home</a>
-  <a href="bikes.html" onclick="closeMobileMenu()">Bikes</a>
-  <a href="about.html" onclick="closeMobileMenu()">About</a>
-  <a href="contact.html" onclick="closeMobileMenu()">Contact</a>
-</div>
-<div class="cart-overlay" id="cartOverlay" onclick="closeCart()"></div>
-<div class="cart-drawer" id="cartDrawer">
-  <div class="cart-head"><h3>Cart</h3><button class="cart-close" onclick="closeCart()">&#x2715;</button></div>
-  <div class="cart-body" id="cartBody"></div>
-  <div class="cart-foot">
-    <div class="cart-total"><span class="cart-total-label">Total</span><span class="cart-total-price" id="cartTotal">&#x20B9;0</span></div>
-    <button class="btn btn-volt" style="width:100%;justify-content:center" onclick="closeCart()">View Checkout Below &#x2193;</button>
-  </div>
-</div>
 
-<div class="page-wrap">
-  <div class="page-hero" style="padding-bottom:1.5rem">
-    <div class="breadcrumb"><a href="index.html">Home</a> / <span>Checkout</span></div>
-    <h1 class="page-hero-title anim-fadeup" style="font-size:clamp(2.2rem,4vw,4.5rem)">Secure <span style="color:var(--volt)">Checkout</span></h1>
-  </div>
+<!-- ─── PAGE ─── -->
+<div class="page">
 
-  <div class="checkout-stepper" id="stepper">
-    <div class="step active" id="step1"><div class="step-num">1</div><span class="step-label">Your Cart</span></div>
-    <div class="step-connector" id="con1"></div>
-    <div class="step" id="step2"><div class="step-num">2</div><span class="step-label">Customer Details</span></div>
-    <div class="step-connector" id="con2"></div>
-    <div class="step" id="step3"><div class="step-num">3</div><span class="step-label">Shipping</span></div>
-    <div class="step-connector" id="con3"></div>
-    <div class="step" id="step4"><div class="step-num">4</div><span class="step-label">Payment</span></div>
-    <div class="step-connector" id="con4"></div>
-    <div class="step" id="step5"><div class="step-num">&#x2713;</div><span class="step-label">Confirmed</span></div>
-  </div>
+  <p class="eyebrow">Secure Checkout</p>
+  <h1 class="page-title">Your <span>Order</span></h1>
 
-  <div class="confirm-screen" id="confirmScreen">
-    <div class="confirm-check">&#x2713;</div>
-    <div class="confirm-order-id" id="confirmOrderId">ORDER #VR-000000</div>
-    <h2 class="confirm-title">Order Placed!</h2>
-    <p class="confirm-sub">Thank you! You will receive a confirmation email shortly. Our team will contact you within 24 hours to schedule delivery.</p>
-    <div style="display:flex;gap:1rem;justify-content:center;flex-wrap:wrap">
-      <a href="bikes.html" class="btn btn-outline btn-lg">Continue Shopping</a>
-      <a href="index.html" class="btn btn-volt btn-lg">Back to Home &#x2192;</a>
-    </div>
-  </div>
+  <!--
+  ┌──────────────────────────────────────────────────────────────────┐
+  │  GTM FORM SUBMISSION SETUP                                       │
+  │  ─────────────────────────────────────────────────────────────  │
+  │  Form id="voltride-checkout" and name="voltride-checkout"        │
+  │  are used as GTM trigger identifiers.                            │
+  │                                                                  │
+  │  GTM Trigger:                                                    │
+  │    Type:      Form Submission                                    │
+  │    Fire on:   Some Forms                                         │
+  │    Condition: Form ID  equals  voltride-checkout                 │
+  │                                                                  │
+  │  Replace action="thank-you.html" with your real endpoint.        │
+  └──────────────────────────────────────────────────────────────────┘
+  -->
+  <form
+    id="voltride-checkout"
+    name="voltride-checkout"
+    action="thank-you.html"
+    method="POST"
+  >
 
-  <div class="checkout-wrap" id="checkoutWrap">
-    <div class="checkout-main">
+    <div class="grid">
 
-      <!-- PANEL 1: CART -->
-      <div class="checkout-panel active" id="panel1">
-        <div class="panel-header">
-          <div class="panel-title"><span class="panel-title-num">1</span>Cart Items</div>
-        </div>
-        <div class="panel-body">
-          <div id="cartItemsWrap"></div>
-          <div class="cart-actions">
-            <div class="promo-row">
-              <input class="promo-input" id="promoCode" type="text" placeholder="Promo code (VOLT10)"/>
-              <button class="promo-apply" onclick="applyPromo()">Apply</button>
-            </div>
-            <div style="display:flex;gap:.8rem;flex-wrap:wrap">
-              <a href="bikes.html" class="btn btn-outline btn-sm">&#x2190; Continue Shopping</a>
-              <button class="btn btn-dark btn-sm" onclick="VoltCart.clear(); renderAll(); showToast('Cart cleared')">Clear Cart</button>
-              <button class="btn btn-volt" onclick="goToStep(2)">Customer Details &#x2192;</button>
-            </div>
+      <!-- ═══════════════════════════════════
+           FORM COLUMN
+      ═══════════════════════════════════ -->
+      <div>
+
+        <!-- ── CARD 1: CUSTOMER DETAILS ── -->
+        <div class="card">
+          <div class="card-head">
+            <span class="step-badge">1</span>
+            <span class="card-label">Customer Details</span>
           </div>
-        </div>
-      </div>
+          <div class="card-body">
 
-      <!-- PANEL 2: CUSTOMER DETAILS -->
-      <div class="checkout-panel" id="panel2">
-        <div class="panel-header">
-          <div class="panel-title"><span class="panel-title-num">2</span>Customer Details</div>
-          <button class="panel-edit" onclick="editStep(2)">Edit</button>
-        </div>
-        <div class="panel-body">
-          <p style="font-size:.78rem;color:var(--muted);margin-bottom:1.5rem;line-height:1.7">Fields marked <span style="color:var(--volt)">*</span> are required. Your data is encrypted and never shared.</p>
+            <p class="sub">Personal Information</p>
 
-          <div style="margin-bottom:2rem">
-            <div class="section-divider">Personal Information</div>
-            <div class="form-grid-2">
-              <div class="form-group">
-                <label class="form-label">First Name <span style="color:var(--volt)">*</span></label>
-                <input class="form-input" id="custFirstName" type="text" placeholder="Arjun" autocomplete="given-name"/>
-                <span class="form-error-msg" id="err-custFirstName">Please enter your first name</span>
+            <div class="row-2">
+              <div class="f">
+                <label for="first_name">First Name <span class="req">*</span></label>
+                <input
+                  type="text" id="first_name" name="first_name"
+                  placeholder="Arjun" required autocomplete="given-name"
+                />
               </div>
-              <div class="form-group">
-                <label class="form-label">Last Name <span style="color:var(--volt)">*</span></label>
-                <input class="form-input" id="custLastName" type="text" placeholder="Mehta" autocomplete="family-name"/>
-                <span class="form-error-msg" id="err-custLastName">Please enter your last name</span>
+              <div class="f">
+                <label for="last_name">Last Name <span class="req">*</span></label>
+                <input
+                  type="text" id="last_name" name="last_name"
+                  placeholder="Mehta" required autocomplete="family-name"
+                />
               </div>
-              <div class="form-group">
-                <label class="form-label">Email Address <span style="color:var(--volt)">*</span></label>
-                <input class="form-input" id="custEmail" type="email" placeholder="arjun@email.com" autocomplete="email"/>
-                <span class="form-error-msg" id="err-custEmail">Please enter a valid email</span>
+            </div>
+
+            <div class="row-2">
+              <div class="f">
+                <label for="email">Email Address <span class="req">*</span></label>
+                <input
+                  type="email" id="email" name="email"
+                  placeholder="arjun@email.com" required autocomplete="email"
+                />
               </div>
-              <div class="form-group">
-                <label class="form-label">Mobile Number <span style="color:var(--volt)">*</span></label>
-                <div class="input-group">
-                  <span class="input-prefix">+91</span>
-                  <input class="form-input" id="custPhone" type="tel" placeholder="98765 43210" maxlength="10" autocomplete="tel"/>
-                </div>
-                <span class="form-error-msg" id="err-custPhone">Enter a valid 10-digit number</span>
-              </div>
-              <div class="form-group">
-                <label class="form-label">Alternate Phone</label>
-                <div class="input-group">
-                  <span class="input-prefix">+91</span>
-                  <input class="form-input" id="custAltPhone" type="tel" placeholder="Optional" maxlength="10"/>
+              <div class="f">
+                <label for="phone">Mobile Number <span class="req">*</span></label>
+                <div class="pfx">
+                  <span class="pfx-lbl">+91</span>
+                  <input
+                    type="tel" id="phone" name="phone"
+                    placeholder="98765 43210"
+                    required maxlength="10" pattern="[0-9]{10}"
+                    autocomplete="tel"
+                  />
                 </div>
               </div>
-              <div class="form-group">
-                <label class="form-label">Date of Birth</label>
-                <input class="form-input" id="custDob" type="date"/>
-                <span class="form-hint">Optional &mdash; used for birthday offers</span>
-              </div>
             </div>
-          </div>
 
-          <div style="margin-bottom:2rem">
-            <div class="section-divider">Identity &amp; Account</div>
-            <div class="form-grid-2">
-              <div class="form-group">
-                <label class="form-label">PAN Number <span style="color:var(--volt)">*</span></label>
-                <input class="form-input" id="custPan" type="text" placeholder="ABCDE1234F" maxlength="10" style="text-transform:uppercase"/>
-                <span class="form-error-msg" id="err-custPan">Enter valid PAN (e.g. ABCDE1234F)</span>
-                <span class="form-hint">Required for orders above Rs 2,00,000</span>
+            <p class="sub">Delivery Address</p>
+
+            <div class="f">
+              <label for="addr1">Address Line 1 <span class="req">*</span></label>
+              <input
+                type="text" id="addr1" name="address_line1"
+                placeholder="House no., Street, Area"
+                required autocomplete="address-line1"
+              />
+            </div>
+            <div class="f">
+              <label for="addr2">Address Line 2</label>
+              <input
+                type="text" id="addr2" name="address_line2"
+                placeholder="Landmark, Colony (optional)"
+                autocomplete="address-line2"
+              />
+            </div>
+
+            <div class="row-3">
+              <div class="f no-mb">
+                <label for="city">City <span class="req">*</span></label>
+                <input
+                  type="text" id="city" name="city"
+                  placeholder="Bengaluru" required autocomplete="address-level2"
+                />
               </div>
-              <div class="form-group">
-                <label class="form-label">GST Number</label>
-                <input class="form-input" id="custGst" type="text" placeholder="27AAPFU0939F1ZV" maxlength="15" style="text-transform:uppercase"/>
-                <span class="form-hint">Optional &mdash; for business purchases</span>
-              </div>
-              <div class="form-group span-2">
-                <label class="form-label">How did you hear about us?</label>
-                <select class="form-select" id="custSource">
-                  <option value="">Select...</option>
-                  <option>Instagram / Social Media</option>
-                  <option>Google Search</option>
-                  <option>Friend / Family Referral</option>
-                  <option>Newspaper / Magazine</option>
-                  <option>YouTube</option>
-                  <option>VoltRide Event</option>
-                  <option>Other</option>
+              <div class="f no-mb">
+                <label for="state">State <span class="req">*</span></label>
+                <select id="state" name="state" required>
+                  <option value="">Select</option>
+                  <option>Andhra Pradesh</option>
+                  <option>Assam</option>
+                  <option>Bihar</option>
+                  <option>Delhi</option>
+                  <option>Goa</option>
+                  <option>Gujarat</option>
+                  <option>Haryana</option>
+                  <option>Himachal Pradesh</option>
+                  <option>Jharkhand</option>
+                  <option>Karnataka</option>
+                  <option>Kerala</option>
+                  <option>Madhya Pradesh</option>
+                  <option>Maharashtra</option>
+                  <option>Odisha</option>
+                  <option>Punjab</option>
+                  <option>Rajasthan</option>
+                  <option>Tamil Nadu</option>
+                  <option>Telangana</option>
+                  <option>Uttar Pradesh</option>
+                  <option>Uttarakhand</option>
+                  <option>West Bengal</option>
                 </select>
               </div>
-            </div>
-          </div>
-
-          <div style="margin-bottom:2rem">
-            <div class="section-divider">Communication Preferences</div>
-            <div style="display:flex;flex-direction:column;gap:.7rem">
-              <label style="display:flex;align-items:center;gap:.8rem;font-size:.82rem;cursor:none"><input type="checkbox" id="prefEmail" checked style="accent-color:var(--volt);width:16px;height:16px"/><span>Email me order updates and tracking info</span></label>
-              <label style="display:flex;align-items:center;gap:.8rem;font-size:.82rem;cursor:none"><input type="checkbox" id="prefSms" checked style="accent-color:var(--volt);width:16px;height:16px"/><span>SMS / WhatsApp notifications for delivery</span></label>
-              <label style="display:flex;align-items:center;gap:.8rem;font-size:.82rem;cursor:none"><input type="checkbox" id="prefNewsletter" style="accent-color:var(--volt);width:16px;height:16px"/><span>Subscribe to VoltRide newsletter</span></label>
-            </div>
-          </div>
-
-          <div style="display:flex;justify-content:flex-end;gap:1rem;flex-wrap:wrap">
-            <button class="btn btn-outline" onclick="editStep(1)">&#x2190; Back to Cart</button>
-            <button class="btn btn-volt" onclick="validateCustomer()">Save &amp; Continue &#x2192;</button>
-          </div>
-        </div>
-      </div>
-
-      <!-- PANEL 3: SHIPPING -->
-      <div class="checkout-panel" id="panel3">
-        <div class="panel-header">
-          <div class="panel-title"><span class="panel-title-num">3</span>Shipping Details</div>
-          <button class="panel-edit" onclick="editStep(3)">Edit</button>
-        </div>
-        <div class="panel-body">
-
-          <div style="margin-bottom:2rem">
-            <div class="section-divider">Delivery Address</div>
-            <div class="form-grid-2">
-              <div class="form-group span-2">
-                <label class="form-label">Address Line 1 <span style="color:var(--volt)">*</span></label>
-                <input class="form-input" id="shipAddr1" type="text" placeholder="House no., Street, Area" autocomplete="address-line1"/>
-                <span class="form-error-msg" id="err-shipAddr1">Please enter your address</span>
-              </div>
-              <div class="form-group span-2">
-                <label class="form-label">Address Line 2</label>
-                <input class="form-input" id="shipAddr2" type="text" placeholder="Landmark, Colony (optional)"/>
-              </div>
-              <div class="form-group">
-                <label class="form-label">City <span style="color:var(--volt)">*</span></label>
-                <input class="form-input" id="shipCity" type="text" placeholder="Bengaluru"/>
-                <span class="form-error-msg" id="err-shipCity">Please enter your city</span>
-              </div>
-              <div class="form-group">
-                <label class="form-label">State <span style="color:var(--volt)">*</span></label>
-                <select class="form-select" id="shipState">
-                  <option value="">Select State</option>
-                  <option>Andhra Pradesh</option><option>Assam</option><option>Bihar</option>
-                  <option>Delhi</option><option>Goa</option><option>Gujarat</option>
-                  <option>Haryana</option><option>Himachal Pradesh</option><option>Jharkhand</option>
-                  <option selected>Karnataka</option><option>Kerala</option><option>Madhya Pradesh</option>
-                  <option>Maharashtra</option><option>Odisha</option><option>Punjab</option>
-                  <option>Rajasthan</option><option>Tamil Nadu</option><option>Telangana</option>
-                  <option>Uttar Pradesh</option><option>Uttarakhand</option><option>West Bengal</option>
-                </select>
-                <span class="form-error-msg" id="err-shipState">Please select a state</span>
-              </div>
-              <div class="form-group">
-                <label class="form-label">PIN Code <span style="color:var(--volt)">*</span></label>
-                <input class="form-input" id="shipPin" type="text" placeholder="560001" maxlength="6"/>
-                <span class="form-error-msg" id="err-shipPin">Enter a valid 6-digit PIN</span>
-              </div>
-              <div class="form-group">
-                <label class="form-label">Delivery Contact <span style="color:var(--volt)">*</span></label>
-                <div class="input-group">
-                  <span class="input-prefix">+91</span>
-                  <input class="form-input" id="shipPhone" type="tel" placeholder="Mobile number" maxlength="10"/>
-                </div>
-                <span class="form-error-msg" id="err-shipPhone">Enter a valid mobile number</span>
+              <div class="f no-mb">
+                <label for="pin">PIN Code <span class="req">*</span></label>
+                <input
+                  type="text" id="pin" name="pincode"
+                  placeholder="560001"
+                  required maxlength="6" pattern="[0-9]{6}"
+                />
               </div>
             </div>
-            <label style="display:flex;align-items:center;gap:.8rem;font-size:.82rem;cursor:none;margin-top:1rem">
-              <input type="checkbox" id="shipSameAddr" checked style="accent-color:var(--volt);width:16px;height:16px"/>
-              <span>Use this as my billing address too</span>
-            </label>
-          </div>
 
-          <div style="margin-bottom:2rem">
-            <div class="section-divider">Select Shipping Method</div>
-            <div style="overflow-x:auto">
-              <table class="shipping-table">
-                <thead>
-                  <tr>
-                    <th></th>
-                    <th>Method</th>
-                    <th>Estimated Delivery</th>
-                    <th>Includes</th>
-                    <th style="text-align:right">Cost</th>
-                  </tr>
-                </thead>
-                <tbody id="shippingTableBody"></tbody>
-              </table>
-            </div>
-          </div>
-
-          <div style="margin-bottom:1.5rem">
-            <div class="section-divider">Delivery Instructions</div>
-            <div class="form-group">
-              <label class="form-label">Special Instructions</label>
-              <textarea class="form-input" id="shipInstructions" style="resize:vertical;min-height:80px" placeholder="e.g. Call before delivery, leave with security, available after 6pm..."></textarea>
-            </div>
-          </div>
-
-          <div style="display:flex;justify-content:flex-end;gap:1rem;flex-wrap:wrap">
-            <button class="btn btn-outline" onclick="editStep(2)">&#x2190; Back</button>
-            <button class="btn btn-volt" onclick="validateShipping()">Continue to Payment &#x2192;</button>
-          </div>
-        </div>
-      </div>
-
-      <!-- PANEL 4: PAYMENT -->
-      <div class="checkout-panel" id="panel4">
-        <div class="panel-header">
-          <div class="panel-title"><span class="panel-title-num">4</span>Payment Options</div>
-        </div>
-        <div class="panel-body">
-          <div class="payment-tabs">
-            <button class="pay-tab active" onclick="switchPayTab('card',this)">&#x1F4B3; Card</button>
-            <button class="pay-tab" onclick="switchPayTab('upi',this)">&#x1F4F1; UPI</button>
-            <button class="pay-tab" onclick="switchPayTab('netbanking',this)">&#x1F3E6; Net Banking</button>
-            <button class="pay-tab" onclick="switchPayTab('emi',this)">&#x1F4C5; EMI</button>
-            <button class="pay-tab" onclick="switchPayTab('cod',this)">&#x1F4B5; Cash on Delivery</button>
-          </div>
-
-          <!-- CARD -->
-          <div class="pay-panel active" id="pay-card">
-            <div style="display:flex;flex-direction:column;gap:1.2rem">
-              <div class="form-group">
-                <label class="form-label">Card Number <span style="color:var(--volt)">*</span></label>
-                <div class="card-number-wrap">
-                  <input class="form-input" id="cardNum" type="text" placeholder="1234  5678  9012  3456" maxlength="19" oninput="formatCard(this)"/>
-                  <span class="card-type-icon" id="cardTypeIcon">&#x1F4B3;</span>
-                </div>
-                <span class="form-error-msg" id="err-cardNum">Enter a valid 16-digit card number</span>
-              </div>
-              <div class="form-group">
-                <label class="form-label">Cardholder Name <span style="color:var(--volt)">*</span></label>
-                <input class="form-input" id="cardName" type="text" placeholder="ARJUN MEHTA" style="text-transform:uppercase"/>
-                <span class="form-error-msg" id="err-cardName">Enter the name as on card</span>
-              </div>
-              <div class="card-expiry-cvv">
-                <div class="form-group">
-                  <label class="form-label">Expiry Date <span style="color:var(--volt)">*</span></label>
-                  <input class="form-input" id="cardExpiry" type="text" placeholder="MM / YY" maxlength="7" oninput="formatExpiry(this)"/>
-                  <span class="form-error-msg" id="err-cardExpiry">Enter valid expiry date</span>
-                </div>
-                <div class="form-group">
-                  <label class="form-label">CVV <span style="color:var(--volt)">*</span></label>
-                  <input class="form-input" id="cardCvv" type="password" placeholder="&bull;&bull;&bull;" maxlength="4"/>
-                  <span class="form-error-msg" id="err-cardCvv">Enter CVV</span>
-                </div>
-              </div>
-              <label style="display:flex;align-items:center;gap:.8rem;font-size:.8rem;cursor:none">
-                <input type="checkbox" id="saveCard" style="accent-color:var(--volt);width:15px;height:15px"/>
-                <span style="color:var(--muted)">Save card securely for future purchases</span>
+            <p class="sub" style="margin-top:1.4rem">Preferences</p>
+            <div class="checks">
+              <label class="chk">
+                <input type="checkbox" name="pref_email" value="yes" checked/>
+                <span>Email me order updates and tracking info</span>
+              </label>
+              <label class="chk">
+                <input type="checkbox" name="pref_sms" value="yes" checked/>
+                <span>SMS / WhatsApp delivery notifications</span>
+              </label>
+              <label class="chk">
+                <input type="checkbox" name="pref_newsletter" value="yes"/>
+                <span>Subscribe to VoltRide newsletter</span>
               </label>
             </div>
-          </div>
 
-          <!-- UPI -->
-          <div class="pay-panel" id="pay-upi">
-            <div class="upi-grid">
-              <div class="upi-option selected" onclick="selectUpi(this)"><div class="upi-logo">&#x1F537;</div><div class="upi-name">PhonePe</div></div>
-              <div class="upi-option" onclick="selectUpi(this)"><div class="upi-logo">&#x1F7E2;</div><div class="upi-name">GPay</div></div>
-              <div class="upi-option" onclick="selectUpi(this)"><div class="upi-logo">&#x1F7E1;</div><div class="upi-name">Paytm</div></div>
-              <div class="upi-option" onclick="selectUpi(this)"><div class="upi-logo">&#x1F535;</div><div class="upi-name">BHIM</div></div>
-              <div class="upi-option" onclick="selectUpi(this)"><div class="upi-logo">&#x1F7E0;</div><div class="upi-name">Amazon Pay</div></div>
-              <div class="upi-option" onclick="selectUpi(this)"><div class="upi-logo">&#x26A1;</div><div class="upi-name">Other UPI</div></div>
-            </div>
-            <div class="form-group">
-              <label class="form-label">Enter UPI ID <span style="color:var(--volt)">*</span></label>
-              <input class="form-input" id="upiId" type="text" placeholder="yourname@upi"/>
-              <span class="form-hint">e.g. arjun@okaxis, 9876543210@ybl</span>
-              <span class="form-error-msg" id="err-upiId">Enter a valid UPI ID</span>
-            </div>
           </div>
+        </div><!-- /card 1 -->
 
-          <!-- NET BANKING -->
-          <div class="pay-panel" id="pay-netbanking">
-            <p style="font-size:.8rem;color:var(--muted);margin-bottom:1.2rem">Select your bank. You will be redirected to your bank's secure login page.</p>
-            <div class="netbanking-grid">
-              <div class="bank-option selected" onclick="selectBank(this)"><span class="bank-logo">&#x1F3E6;</span><span>State Bank of India</span></div>
-              <div class="bank-option" onclick="selectBank(this)"><span class="bank-logo">&#x1F535;</span><span>HDFC Bank</span></div>
-              <div class="bank-option" onclick="selectBank(this)"><span class="bank-logo">&#x1F7E0;</span><span>ICICI Bank</span></div>
-              <div class="bank-option" onclick="selectBank(this)"><span class="bank-logo">&#x1F7E1;</span><span>Axis Bank</span></div>
-              <div class="bank-option" onclick="selectBank(this)"><span class="bank-logo">&#x1F7E2;</span><span>Kotak Mahindra</span></div>
-              <div class="bank-option" onclick="selectBank(this)"><span class="bank-logo">&#x1F534;</span><span>Yes Bank</span></div>
-              <div class="bank-option" onclick="selectBank(this)"><span class="bank-logo">&#x1F7E3;</span><span>Punjab National Bank</span></div>
-              <div class="bank-option" onclick="selectBank(this)"><span class="bank-logo">&#x26AB;</span><span>Bank of Baroda</span></div>
-            </div>
-            <div class="form-group">
-              <label class="form-label">Other Bank</label>
-              <select class="form-select"><option value="">Search other banks...</option><option>Canara Bank</option><option>Federal Bank</option><option>IDFC First Bank</option><option>IndusInd Bank</option><option>RBL Bank</option></select>
-            </div>
+        <!-- ── CARD 2: PAYMENT ── -->
+        <div class="card pay-section">
+          <div class="card-head">
+            <span class="step-badge">2</span>
+            <span class="card-label">Payment</span>
           </div>
+          <div class="card-body">
 
-          <!-- EMI -->
-          <div class="pay-panel" id="pay-emi">
-            <p style="font-size:.8rem;color:var(--muted);margin-bottom:1.2rem">Choose an EMI plan. Rates shown per annum. No foreclosure charges.</p>
-            <div class="emi-plans" id="emiPlansContainer"></div>
-            <div class="form-group" style="margin-top:.5rem">
-              <label class="form-label">Issuing Bank / Card</label>
-              <select class="form-select">
-                <option>HDFC Credit Card</option>
-                <option>ICICI Credit Card</option>
-                <option>SBI Credit Card</option>
-                <option>Axis Credit Card</option>
-                <option>Bajaj Finserv (No-Cost)</option>
-                <option>HDFC Debit Card EMI</option>
-              </select>
-            </div>
-          </div>
+            <div class="pay-options">
 
-          <!-- COD -->
-          <div class="pay-panel" id="pay-cod">
-            <div class="cod-note">
-              <div class="cod-icon">&#x1F4B5;</div>
-              <div class="cod-text">
-                <h4>Cash on Delivery</h4>
-                <p>Pay in cash when your bike arrives. Our executive carries a payment receipt. COD available on orders up to Rs 1,50,000. A Rs 250 handling fee applies.</p>
+              <!-- Credit / Debit Card -->
+              <label class="pay-opt">
+                <input type="radio" id="pay-card" name="payment_method" value="card" checked/>
+                <span class="pay-ico">&#x1F4B3;</span>
+                <span class="pay-info">
+                  <span class="pay-name">Credit / Debit Card</span>
+                  <span class="pay-desc">Visa &middot; Mastercard &middot; RuPay &middot; Amex</span>
+                </span>
+              </label>
+
+              <!-- Card sub-fields — CSS :has() shows when #pay-card is checked -->
+              <div class="card-sub">
+                <div class="f no-mb">
+                  <label for="card_number">Card Number <span class="req">*</span></label>
+                  <input
+                    type="text" id="card_number" name="card_number"
+                    placeholder="1234  5678  9012  3456"
+                    maxlength="19" autocomplete="cc-number"
+                  />
+                </div>
+                <div class="f no-mb">
+                  <label for="card_name">Cardholder Name <span class="req">*</span></label>
+                  <input
+                    type="text" id="card_name" name="card_name"
+                    placeholder="ARJUN MEHTA"
+                    style="text-transform:uppercase"
+                    autocomplete="cc-name"
+                  />
+                </div>
+                <div class="row-2">
+                  <div class="f no-mb">
+                    <label for="card_expiry">Expiry Date <span class="req">*</span></label>
+                    <input
+                      type="text" id="card_expiry" name="card_expiry"
+                      placeholder="MM / YY" maxlength="7"
+                      autocomplete="cc-exp"
+                    />
+                  </div>
+                  <div class="f no-mb">
+                    <label for="card_cvv">CVV <span class="req">*</span></label>
+                    <input
+                      type="password" id="card_cvv" name="card_cvv"
+                      placeholder="&bull;&bull;&bull;" maxlength="4"
+                      autocomplete="cc-csc"
+                    />
+                  </div>
+                </div>
               </div>
-            </div>
-            <div style="margin-top:1.5rem;padding:1.2rem;border:1px solid var(--border);font-size:.8rem">
-              <div style="display:flex;justify-content:space-between;margin-bottom:.5rem"><span style="color:var(--muted)">COD Handling Fee</span><span>Rs 250</span></div>
-              <div style="display:flex;justify-content:space-between"><span style="color:var(--muted)">Accepted Denominations</span><span>Rs 500, Rs 2000 notes</span></div>
-            </div>
-          </div>
 
-          <div class="security-strip">
-            <div class="sec-item"><span>&#x1F512;</span><span>256-bit SSL</span></div>
-            <div class="sec-item"><span>&#x2705;</span><span>PCI-DSS Compliant</span></div>
-            <div class="sec-item"><span>&#x1F6E1;&#xFE0F;</span><span>Razorpay Secured</span></div>
-            <div class="sec-item"><span>&#x21A9;&#xFE0F;</span><span>7-Day Returns</span></div>
-          </div>
+              <!-- UPI -->
+              <label class="pay-opt">
+                <input type="radio" id="pay-upi" name="payment_method" value="upi"/>
+                <span class="pay-ico">&#x1F4F1;</span>
+                <span class="pay-info">
+                  <span class="pay-name">UPI</span>
+                  <span class="pay-desc">PhonePe &middot; GPay &middot; Paytm &middot; BHIM</span>
+                </span>
+              </label>
 
-          <div style="display:flex;justify-content:flex-end;gap:1rem;margin-top:2rem;flex-wrap:wrap">
-            <button class="btn btn-outline" onclick="editStep(3)">&#x2190; Back</button>
-            <button class="btn btn-volt btn-lg" onclick="placeOrder()">Place Order &#x2192;</button>
+              <!-- UPI sub-field -->
+              <div class="upi-sub">
+                <div class="f no-mb">
+                  <label for="upi_id">UPI ID <span class="req">*</span></label>
+                  <input
+                    type="text" id="upi_id" name="upi_id"
+                    placeholder="yourname@upi"
+                  />
+                  <span class="hint">e.g. arjun@okaxis &nbsp;|&nbsp; 9876543210@ybl</span>
+                </div>
+              </div>
+
+              <!-- Net Banking -->
+              <label class="pay-opt">
+                <input type="radio" name="payment_method" value="netbanking"/>
+                <span class="pay-ico">&#x1F3E6;</span>
+                <span class="pay-info">
+                  <span class="pay-name">Net Banking</span>
+                  <span class="pay-desc">All major Indian banks</span>
+                </span>
+              </label>
+
+              <!-- EMI -->
+              <label class="pay-opt">
+                <input type="radio" name="payment_method" value="emi"/>
+                <span class="pay-ico">&#x1F4C5;</span>
+                <span class="pay-info">
+                  <span class="pay-name">EMI</span>
+                  <span class="pay-desc">3 &ndash; 24 months &mdash; 0% for 6 months</span>
+                </span>
+                <span class="pay-tag">0% Available</span>
+              </label>
+
+              <!-- Cash on Delivery -->
+              <label class="pay-opt">
+                <input type="radio" name="payment_method" value="cod"/>
+                <span class="pay-ico">&#x1F4B5;</span>
+                <span class="pay-info">
+                  <span class="pay-name">Cash on Delivery</span>
+                  <span class="pay-desc">Up to &#x20B9;1,50,000 &mdash; &#x20B9;250 handling fee</span>
+                </span>
+              </label>
+
+            </div><!-- /pay-options -->
+
+            <!-- Security badges -->
+            <div class="sec-strip">
+              <span class="sec-item">&#x1F512; 256-bit SSL</span>
+              <span class="sec-item">&#x2705; PCI-DSS Compliant</span>
+              <span class="sec-item">&#x1F6E1;&#xFE0F; Razorpay Secured</span>
+              <span class="sec-item">&#x21A9;&#xFE0F; 7-Day Returns</span>
+            </div>
+
+            <!--
+            ┌──────────────────────────────────────────────────────────┐
+            │  HIDDEN FIELDS FOR GTM / GA4                             │
+            │  Populate server-side before page render.                │
+            │                                                          │
+            │  GTM Variable (DOM Element):                             │
+            │    order_id     → input[name="order_id"]                 │
+            │    order_value  → input[name="order_value"]              │
+            │    payment_method → input[name="payment_method"]:checked │
+            └──────────────────────────────────────────────────────────┘
+            -->
+            <input type="hidden" name="order_id"    value=""/>
+            <input type="hidden" name="order_value" value=""/>
+            <input type="hidden" name="currency"    value="INR"/>
+            <input type="hidden" name="source_page" value="cart.html"/>
+
+            <!-- SUBMIT BUTTON -->
+            <button type="submit" class="submit">
+              Place Order &nbsp;&#x2192;
+            </button>
+
+            <p class="tnc">
+              By placing your order you agree to our
+              <a href="#">Terms of Service</a> and
+              <a href="#">Privacy Policy</a>.
+              VoltRide never stores your card details.
+            </p>
+
           </div>
+        </div><!-- /card 2 -->
+
+      </div><!-- /form column -->
+
+      <!-- ═══════════════════════════════════
+           ORDER SUMMARY SIDEBAR
+           Replace values below server-side
+      ═══════════════════════════════════ -->
+      <aside class="summary">
+        <div class="sum-title">Order Summary</div>
+
+        <div class="sum-item">
+          <div>
+            <div class="sum-item-name">VOLT URBAN X1</div>
+            <div class="sum-item-qty">Qty: 1</div>
+          </div>
+          <div class="sum-item-price">&#x20B9;89,999</div>
         </div>
-      </div>
+        <div class="sum-item">
+          <div>
+            <div class="sum-item-name">APEX TRAIL PRO</div>
+            <div class="sum-item-qty">Qty: 1</div>
+          </div>
+          <div class="sum-item-price">&#x20B9;1,39,999</div>
+        </div>
 
-    </div><!-- /checkout-main -->
+        <div class="sum-divider"></div>
 
-    <!-- SIDEBAR: ORDER SUMMARY -->
-    <div class="order-summary" id="orderSummary">
-      <div class="summary-title">Order Summary</div>
-      <div class="summary-items" id="summaryItems"></div>
-      <div class="summary-divider"></div>
-      <div class="summary-row"><span class="summary-label">Subtotal</span><span id="sumSubtotal">&#x20B9;0</span></div>
-      <div class="summary-row"><span class="summary-label">Shipping</span><span id="sumShipping">&mdash;</span></div>
-      <div class="summary-row"><span class="summary-label">GST (18%)</span><span>Included</span></div>
-      <div class="summary-row" id="discountRow" style="display:none;color:#4ade80"><span>Discount</span><span id="sumDiscount"></span></div>
-      <div class="summary-row total"><span class="s-lbl">Total</span><span class="s-val" id="sumTotal">&#x20B9;0</span></div>
-      <div class="savings-note" id="savingsNote" style="display:none"></div>
-      <div style="margin-top:1.5rem;padding-top:1.5rem;border-top:1px solid var(--border)">
-        <div style="font-size:.68rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:.8rem">We Accept</div>
-        <div style="display:flex;gap:.6rem;flex-wrap:wrap;font-size:1.2rem">&#x1F4B3; &#x1F4F1; &#x1F3E6; &#x1F4B5;</div>
-      </div>
-    </div>
-  </div><!-- /checkout-wrap -->
+        <div class="sum-row">
+          <span class="sum-lbl">Subtotal</span>
+          <span>&#x20B9;2,29,998</span>
+        </div>
+        <div class="sum-row">
+          <span class="sum-lbl">Shipping</span>
+          <span class="sum-free">FREE</span>
+        </div>
+        <div class="sum-row">
+          <span class="sum-lbl">GST (18%)</span>
+          <span>Included</span>
+        </div>
 
-  <section style="padding:4rem 3rem;background:var(--mid)" id="recommendedSection">
-    <div class="section-header"><h2 class="section-title">You Might Also <span class="accent">Like</span></h2><a href="bikes.html" class="btn btn-outline btn-sm">All Bikes &#x2192;</a></div>
-    <div class="products-grid">
-      <div class="product-card"><span class="tag tag-filled-volt" style="margin-bottom:1rem">Popular</span><div class="card-img" style="font-size:4rem;color:var(--volt)">&#x1F6B2;</div><div class="card-name">VOLT URBAN X1</div><div class="card-spec">250W &middot; 60km &middot; 25kg</div><div class="card-footer"><div class="card-price">&#x20B9;89,999</div><button class="card-add btn" onclick="VoltCart.add('VOLT URBAN X1',89999); renderAll(); showToast('Added!')">+</button></div></div>
-      <div class="product-card"><span class="tag tag-orange" style="margin-bottom:1rem">Trail</span><div class="card-img" style="font-size:4rem;color:#ff9500">&#x26F0;&#xFE0F;</div><div class="card-name">APEX TRAIL PRO</div><div class="card-spec">500W &middot; 80km &middot; 28kg</div><div class="card-footer"><div class="card-price" style="color:#ff9500">&#x20B9;1,39,999</div><button class="card-add btn" style="background:#ff9500" onclick="VoltCart.add('APEX TRAIL PRO',139999,'#ff9500','&#x26F0;&#xFE0F;'); renderAll(); showToast('Added!')">+</button></div></div>
-      <div class="product-card"><span class="tag tag-red" style="margin-bottom:1rem">Limited</span><div class="card-img" style="font-size:4rem;color:var(--red)">&#x1F3CE;&#xFE0F;</div><div class="card-name">PHANTOM GT-R</div><div class="card-spec">1000W &middot; 100km &middot; 26kg</div><div class="card-footer"><div class="card-price" style="color:var(--red)">&#x20B9;2,49,999</div><button class="card-add btn" style="background:var(--red)" onclick="VoltCart.add('PHANTOM GT-R',249999,'var(--red)','&#x1F3CE;&#xFE0F;'); renderAll(); showToast('Added!')">+</button></div></div>
-    </div>
-  </section>
+        <div class="sum-total">
+          <span class="sum-total-lbl">Total</span>
+          <span class="sum-total-val">&#x20B9;2,29,998</span>
+        </div>
 
-  <footer class="footer">
-    <div class="footer-top">
-      <div class="footer-brand"><a class="nav-logo" href="index.html"><span class="accent">VOLT</span>RIDE</a><p>Premium electric bicycles for the modern Indian rider.</p></div>
-      <div class="footer-col"><h4>Bikes</h4><ul><li><a href="bikes.html">All Bikes</a></li></ul></div>
-      <div class="footer-col"><h4>Support</h4><ul><li><a href="contact.html">Contact</a></li><li><a href="#">Returns</a></li></ul></div>
-      <div class="footer-col"><h4>Company</h4><ul><li><a href="about.html">About</a></li></ul></div>
-    </div>
-    <div class="footer-bottom"><p>&copy; 2025 VoltRide Pvt. Ltd.</p><p><a href="#">Privacy</a> &middot; <a href="#">Terms</a></p></div>
-  </footer>
-</div>
+        <p class="sum-note">
+          Free shipping on orders above &#x20B9;1,00,000.
+          Doorstep assembly included.
+          Delivery in 5&ndash;7 business days.
+        </p>
 
-<script src="script.js"></script>
-<script>
-var currentStep = 1;
-var discount = 0;
-var selectedShipping = { id: 'standard', price: 0, name: 'Standard Delivery' };
-var shippingMethods = [
-  { id: 'standard',  name: 'Standard Delivery',   desc: 'Door-step assembly included',          eta: '5-7 Business Days',  etaFast: false, price: 0,    features: 'Assembly + Tracking + Insured' },
-  { id: 'express',   name: 'Express Delivery',     desc: 'Priority handling and dispatch',       eta: '2-3 Business Days',  etaFast: true,  price: 1499, features: 'Assembly + Live Tracking + Insured' },
-  { id: 'scheduled', name: 'Scheduled Delivery',   desc: 'Choose your delivery date and slot',  eta: 'Your chosen date',   etaFast: false, price: 499,  features: 'Assembly + Slot Booking + SMS Alert' },
-  { id: 'pickup',    name: 'Store Pickup',         desc: 'Collect from nearest VoltRide centre', eta: 'Ready in 24hrs',     etaFast: true,  price: 0,    features: 'Free + Test Ride + Service Centre' }
-];
+        <div class="trust-row">
+          <span class="trust-item">&#x26A1; Assembly Included</span>
+          <span class="trust-item">&#x1F6E1;&#xFE0F; 3-Year Warranty</span>
+          <span class="trust-item">&#x21A9;&#xFE0F; 7-Day Returns</span>
+          <span class="trust-item">&#x1F4B3; EMI Available</span>
+        </div>
+      </aside>
 
-function renderCartItems() {
-  var items = VoltCart.get();
-  var wrap = document.getElementById('cartItemsWrap');
-  if (!wrap) return;
-  if (items.length === 0) {
-    wrap.innerHTML = '<div style="text-align:center;padding:3rem;color:var(--muted)"><div style="font-size:3rem;margin-bottom:1rem;opacity:.3">&#x1F6D2;</div><p>No items in cart. <a href="bikes.html" style="color:var(--volt)">Shop bikes</a></p></div>';
-    return;
-  }
-  var head = '<div class="cart-table-head"><span>Product</span><span>Price</span><span>Quantity</span><span>Total</span><span></span></div>';
-  var rows = items.map(function(item, i) {
-    return '<div class="cart-row">' +
-      '<div class="cart-row-product"><div class="cart-row-thumb" style="color:' + item.color + '">' + item.emoji + '</div><div><div class="cart-row-name">' + item.name + '</div><div class="cart-row-sub">Electric Bicycle</div></div></div>' +
-      '<div class="cart-row-price">&#x20B9;' + item.price.toLocaleString('en-IN') + '</div>' +
-      '<div class="qty-control"><button onclick="VoltCart.changeQty(' + i + ',-1); renderAll()">&#x2212;</button><span>' + item.qty + '</span><button onclick="VoltCart.changeQty(' + i + ',1); renderAll()">+</button></div>' +
-      '<div class="cart-row-price">&#x20B9;' + (item.price * item.qty).toLocaleString('en-IN') + '</div>' +
-      '<button class="remove-btn" onclick="VoltCart.remove(' + i + '); renderAll(); showToast(\'Item removed\')">&#x2715;</button>' +
-      '</div>';
-  }).join('');
-  wrap.innerHTML = head + rows;
-}
+    </div><!-- /grid -->
 
-function renderSummary() {
-  var items = VoltCart.get();
-  var subtotal = VoltCart.total();
-  var shipCost = selectedShipping.price;
-  var total = subtotal + shipCost - discount;
-  var siEl = document.getElementById('summaryItems');
-  if (siEl) {
-    siEl.innerHTML = items.map(function(item) {
-      return '<div class="summary-item"><div class="summary-item-thumb" style="color:' + item.color + '">' + item.emoji + '</div><div class="summary-item-name">' + item.name + '<br><span class="summary-item-qty">Qty: ' + item.qty + '</span></div><div class="summary-item-price">&#x20B9;' + (item.price * item.qty).toLocaleString('en-IN') + '</div></div>';
-    }).join('');
-  }
-  document.getElementById('sumSubtotal').textContent = '&#x20B9;' + subtotal.toLocaleString('en-IN');
-  var sumShip = document.getElementById('sumShipping');
-  sumShip.innerHTML = shipCost === 0 ? '<span style="color:#4ade80">FREE</span>' : '&#x20B9;' + shipCost.toLocaleString('en-IN');
-  document.getElementById('sumTotal').textContent = '&#x20B9;' + Math.max(0, total).toLocaleString('en-IN');
-  var discRow = document.getElementById('discountRow');
-  var discEl = document.getElementById('sumDiscount');
-  if (discount > 0) { discRow.style.display = 'flex'; discEl.textContent = '-&#x20B9;' + discount.toLocaleString('en-IN'); }
-  else { discRow.style.display = 'none'; }
-  var savNote = document.getElementById('savingsNote');
-  if (subtotal >= 100000 && shipCost === 0 && selectedShipping.id !== 'express') { savNote.style.display = 'block'; savNote.textContent = 'You qualify for free standard shipping!'; }
-  else if (discount > 0) { savNote.style.display = 'block'; savNote.textContent = 'Promo applied! Saving &#x20B9;' + discount.toLocaleString('en-IN'); }
-  else { savNote.style.display = 'none'; }
-}
+  </form>
+  <!-- End form#voltride-checkout — GTM Form Submission trigger fires on submit -->
 
-function renderShippingTable() {
-  var subtotal = VoltCart.total();
-  var tbody = document.getElementById('shippingTableBody');
-  if (!tbody) return;
-  tbody.innerHTML = shippingMethods.map(function(m) {
-    var isFree = subtotal >= 100000 && m.id === 'standard';
-    var price = isFree ? 0 : m.price;
-    var isSelected = selectedShipping.id === m.id;
-    var dotInner = isSelected ? '<div style="width:8px;height:8px;background:var(--volt);border-radius:50%;margin:auto"></div>' : '';
-    return '<tr class="' + (isSelected ? 'selected-row' : '') + '" onclick="selectShipping(\'' + m.id + '\',' + price + ',\'' + m.name + '\')">' +
-      '<td><div class="radio-dot" style="border-color:' + (isSelected ? 'var(--volt)' : 'rgba(244,241,235,.2)') + '">' + dotInner + '</div></td>' +
-      '<td><div class="ship-method-name">' + m.name + '</div><div class="ship-method-desc">' + m.desc + '</div></td>' +
-      '<td><span class="ship-eta ' + (m.etaFast ? 'fast' : '') + '">' + m.eta + '</span></td>' +
-      '<td style="font-size:.72rem;color:var(--muted)">' + m.features + '</td>' +
-      '<td style="text-align:right"><div class="ship-price ' + (price === 0 ? 'free' : '') + '">' + (price === 0 ? 'FREE' : '&#x20B9;' + price.toLocaleString('en-IN')) + '</div></td>' +
-      '</tr>';
-  }).join('');
-}
+</div><!-- /page -->
 
-function renderEmiPlans() {
-  var subtotal = VoltCart.total();
-  var plans = [
-    { months: 3,  interest: 0,  label: '0% Interest' },
-    { months: 6,  interest: 0,  label: '0% Interest' },
-    { months: 9,  interest: 12, label: '12% p.a.' },
-    { months: 12, interest: 14, label: '14% p.a.' },
-    { months: 18, interest: 15, label: '15% p.a.' },
-    { months: 24, interest: 16, label: '16% p.a.' }
-  ];
-  var container = document.getElementById('emiPlansContainer');
-  if (!container) return;
-  container.innerHTML = plans.map(function(p, i) {
-    var mi = p.interest / 100 / 12;
-    var emi = p.interest === 0 ? subtotal / p.months : subtotal * mi * Math.pow(1+mi,p.months) / (Math.pow(1+mi,p.months)-1);
-    var totalPay = emi * p.months;
-    return '<div class="emi-row ' + (i===0?'selected':'') + '" onclick="document.querySelectorAll(\'.emi-row\').forEach(function(r){r.classList.remove(\'selected\')}); this.classList.add(\'selected\')">' +
-      '<div class="emi-months">' + p.months + '<small>months</small></div>' +
-      '<div><div class="emi-detail">via Credit / Debit Card</div><div class="emi-detail-sub">Total: &#x20B9;' + Math.round(totalPay).toLocaleString('en-IN') + '</div></div>' +
-      '<div class="emi-int ' + (p.interest===0?'zero':'interest') + '">' + p.label + '</div>' +
-      '<div class="emi-emi">&#x20B9;' + Math.round(emi).toLocaleString('en-IN') + '<span style="font-family:\'DM Sans\',sans-serif;font-size:.65rem;font-weight:300;color:var(--muted)">/mo</span></div>' +
-      '</div>';
-  }).join('');
-}
+<!-- ─── FOOTER ─── -->
+<footer class="footer">
+  <a class="logo" href="index.html" style="font-size:1.3rem"><span class="v">VOLT</span>RIDE</a>
+  <p>&copy; 2025 VoltRide Pvt. Ltd. All rights reserved.</p>
+  <div class="footer-links">
+    <a href="#">Privacy Policy</a>
+    <a href="#">Terms of Service</a>
+    <a href="#">Refund Policy</a>
+  </div>
+</footer>
 
-function renderAll() { renderCartItems(); renderSummary(); renderShippingTable(); renderEmiPlans(); }
+<!--
+══════════════════════════════════════════════════════════════════
+  GTM QUICK REFERENCE
+══════════════════════════════════════════════════════════════════
 
-function goToStep(n) {
-  if (n===1 && VoltCart.count()===0) { showToast('Add items to your cart first!'); return; }
-  for (var i=1;i<=4;i++) {
-    var p = document.getElementById('panel'+i);
-    if (!p) continue;
-    p.classList.remove('active','done');
-    if (i===n) p.classList.add('active');
-    else if (i<n) p.classList.add('done');
-  }
-  for (var j=1;j<=5;j++) {
-    var s = document.getElementById('step'+j);
-    var con = document.getElementById('con'+(j-1));
-    if (!s) continue;
-    s.classList.remove('active','done');
-    if (j===n) s.classList.add('active');
-    else if (j<n) s.classList.add('done');
-    if (con) con.classList.toggle('done', j<=n);
-  }
-  currentStep = n;
-  document.getElementById('stepper').scrollIntoView({behavior:'smooth',block:'start'});
-}
-function editStep(n) { goToStep(n); }
+  1. TRIGGER — Form Submission
+     ─────────────────────────
+     Trigger Type:  Form Submission
+     Fire On:       Some Forms
+     Condition:     Form ID  |  equals  |  voltride-checkout
 
-function setError(id, show) {
-  var inp = document.getElementById(id);
-  var err = document.getElementById('err-'+id);
-  if (inp) inp.classList.toggle('error', show);
-  if (err) err.classList.toggle('show', show);
-  return show;
-}
-function clearErrors(ids) { ids.forEach(function(id){setError(id,false);}); }
-function v(id) { var el=document.getElementById(id); return el?el.value.trim():''; }
+  2. VARIABLES — DOM Element
+     ────────────────────────
+     Name: form_email
+       Selector:  #email
 
-function validateCustomer() {
-  var ids=['custFirstName','custLastName','custEmail','custPhone','custPan'];
-  clearErrors(ids);
-  var ok=true;
-  if (!v('custFirstName')) { setError('custFirstName',true); ok=false; }
-  if (!v('custLastName'))  { setError('custLastName',true);  ok=false; }
-  var email=v('custEmail');
-  if (!email||!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { setError('custEmail',true); ok=false; }
-  var phone=v('custPhone');
-  if (!phone||!/^\d{10}$/.test(phone)) { setError('custPhone',true); ok=false; }
-  var pan=v('custPan');
-  if (!pan||!/^[A-Z]{5}[0-9]{4}[A-Z]$/.test(pan.toUpperCase())) { setError('custPan',true); ok=false; }
-  if (ok) { goToStep(3); showToast('Details saved'); }
-  else showToast('Please fix the highlighted fields');
-}
+     Name: form_phone
+       Selector:  #phone
 
-function validateShipping() {
-  var ids=['shipAddr1','shipCity','shipState','shipPin','shipPhone'];
-  clearErrors(ids);
-  var ok=true;
-  if (!v('shipAddr1')) { setError('shipAddr1',true); ok=false; }
-  if (!v('shipCity'))  { setError('shipCity',true);  ok=false; }
-  if (!v('shipState')) { setError('shipState',true); ok=false; }
-  var pin=v('shipPin');
-  if (!pin||!/^\d{6}$/.test(pin)) { setError('shipPin',true); ok=false; }
-  var sp=v('shipPhone');
-  if (!sp||!/^\d{10}$/.test(sp)) { setError('shipPhone',true); ok=false; }
-  if (ok) { goToStep(4); showToast('Shipping details saved'); }
-  else showToast('Please fix the highlighted fields');
-}
+     Name: payment_method
+       Selector:  input[name="payment_method"]:checked
+       Attribute: value
 
-function placeOrder() {
-  var activeTab = document.querySelector('.pay-tab.active');
-  var method = activeTab ? activeTab.textContent.trim() : 'Card';
-  if (method.indexOf('Card') > -1) {
-    var num = v('cardNum').replace(/\s/g,'');
-    if (num.length < 16) { setError('cardNum',true); showToast('Enter valid card number'); return; }
-    if (!v('cardName')) { setError('cardName',true); showToast('Enter cardholder name'); return; }
-    if (v('cardExpiry').length < 5) { setError('cardExpiry',true); showToast('Enter valid expiry'); return; }
-    if (v('cardCvv').length < 3) { setError('cardCvv',true); showToast('Enter CVV'); return; }
-  }
-  if (method.indexOf('UPI') > -1) {
-    var uid=v('upiId');
-    if (!uid||uid.indexOf('@')===-1) { setError('upiId',true); showToast('Enter valid UPI ID'); return; }
-  }
-  var orderId = 'VR-' + Date.now().toString(36).toUpperCase();
-  showToast('Processing your order...');
-  setTimeout(function() {
-    VoltCart.clear();
-    document.getElementById('checkoutWrap').style.display = 'none';
-    document.getElementById('recommendedSection').style.display = 'none';
-    for (var i=1;i<=4;i++) { var s=document.getElementById('step'+i); if(s){s.classList.remove('active'); s.classList.add('done');} }
-    var s5=document.getElementById('step5'); if(s5) s5.classList.add('active');
-    document.getElementById('confirmOrderId').textContent = 'ORDER #'+orderId;
-    document.getElementById('confirmScreen').classList.add('show');
-    window.scrollTo({top:0,behavior:'smooth'});
-    showToast('Order placed successfully!');
-  }, 2000);
-}
+     Name: order_value
+       Selector:  input[name="order_value"]
+       Attribute: value
 
-function selectShipping(id, price, name) { selectedShipping={id:id,price:price,name:name}; renderShippingTable(); renderSummary(); }
+     Name: order_id
+       Selector:  input[name="order_id"]
+       Attribute: value
 
-function applyPromo() {
-  var code = document.getElementById('promoCode') ? document.getElementById('promoCode').value.trim().toUpperCase() : '';
-  var subtotal = VoltCart.total();
-  if (code==='VOLT10') { discount=Math.round(subtotal*0.10); showToast('10% discount applied! Saving Rs '+discount.toLocaleString('en-IN')); }
-  else if (code==='FIRSTRIDE') { selectedShipping={id:'standard',price:0,name:'Standard Delivery (Free)'}; showToast('Free delivery unlocked!'); }
-  else if (code==='VOLT500') { discount=500; showToast('Rs 500 flat off applied!'); }
-  else { showToast('Invalid code. Try VOLT10, VOLT500 or FIRSTRIDE'); return; }
-  renderAll();
-}
+  3. TAG — GA4 Purchase Event
+     ─────────────────────────
+     Tag Type:   Google Analytics: GA4 Event
+     Event Name: purchase
+     Parameters:
+       transaction_id  → {{order_id}}
+       value           → {{order_value}}
+       currency        → INR
+       payment_method  → {{payment_method}}
 
-function switchPayTab(id, btn) {
-  document.querySelectorAll('.pay-tab').forEach(function(t){t.classList.remove('active');});
-  document.querySelectorAll('.pay-panel').forEach(function(p){p.classList.remove('active');});
-  btn.classList.add('active');
-  var panel = document.getElementById('pay-'+id);
-  if (panel) panel.classList.add('active');
-}
-function selectUpi(el) { document.querySelectorAll('.upi-option').forEach(function(o){o.classList.remove('selected');}); el.classList.add('selected'); }
-function selectBank(el) { document.querySelectorAll('.bank-option').forEach(function(o){o.classList.remove('selected');}); el.classList.add('selected'); }
+  4. TAG — Meta Pixel Lead Event (optional)
+     ─────────────────────────────────────
+     Tag Type:   Custom HTML
+     HTML:       <script>fbq('track', 'Purchase', {value: '{{order_value}}', currency: 'INR'});</script>
+     Trigger:    Form Submission on voltride-checkout
 
-function formatCard(input) {
-  var val=input.value.replace(/\D/g,'').substring(0,16);
-  input.value=val.replace(/(.{4})/g,'$1 ').trim();
-  var icon=document.getElementById('cardTypeIcon');
-  if (!icon) return;
-  if (val.startsWith('4')) icon.textContent='&#x1F535;';
-  else if (val.startsWith('5')) icon.textContent='&#x1F7E0;';
-  else if (val.startsWith('37')) icon.textContent='&#x1F7E2;';
-  else if (val.startsWith('6')) icon.textContent='&#x1F535;';
-  else icon.textContent='&#x1F4B3;';
-}
-function formatExpiry(input) {
-  var val=input.value.replace(/\D/g,'');
-  if (val.length>=2) val=val.substring(0,2)+' / '+val.substring(2,4);
-  input.value=val;
-}
+  5. HIDDEN FIELDS — populate server-side
+     ─────────────────────────────────────
+     input[name="order_id"]    → your backend order reference
+     input[name="order_value"] → cart total as number (e.g. 229998)
+══════════════════════════════════════════════════════════════════
+-->
 
-document.addEventListener('DOMContentLoaded', function() {
-  var custPhone=document.getElementById('custPhone');
-  var shipPhone=document.getElementById('shipPhone');
-  if (custPhone && shipPhone) {
-    custPhone.addEventListener('blur', function() { if (!shipPhone.value) shipPhone.value=custPhone.value.trim(); });
-  }
-  renderAll();
-  goToStep(1);
-});
-</script>
 </body>
 </html>
