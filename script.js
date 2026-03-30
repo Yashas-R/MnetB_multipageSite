@@ -63,21 +63,26 @@ const VoltCart = (() => {
     const idx = items.findIndex(i => i.name === name);
     if (idx > -1) { items[idx].qty++; }
     else { items.push({ name, price, qty: 1, color, emoji }); }
-    save(); render(); updateBadge();
+    save(); render(); updateBadge(); syncCartPage();
   }
 
   function remove(index) {
     items.splice(index, 1);
-    save(); render(); updateBadge();
+    save(); render(); updateBadge(); syncCartPage();
   }
 
   function changeQty(index, delta) {
     items[index].qty += delta;
     if (items[index].qty < 1) { items.splice(index, 1); }
-    save(); render(); updateBadge();
+    save(); render(); updateBadge(); syncCartPage();
   }
 
-  function clear() { items = []; save(); render(); updateBadge(); }
+  function clear() { items = []; save(); render(); updateBadge(); syncCartPage(); }
+
+  // Re-render the cart.html order summary sidebar if we're on that page
+  function syncCartPage() {
+    if (typeof populateSummary === 'function') populateSummary();
+  }
 
   function updateBadge() {
     const badge = document.getElementById('cartCount');
@@ -111,7 +116,7 @@ const VoltCart = (() => {
     if (tp) tp.textContent = '₹' + total().toLocaleString('en-IN');
   }
 
-  function init() { updateBadge(); render(); }
+  function init() { updateBadge(); render(); syncCartPage(); }
 
   return { get, count, total, add, remove, changeQty, clear, render, init, save };
 })();
