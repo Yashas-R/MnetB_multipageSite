@@ -19,11 +19,13 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 </script>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>VoltRide — Your Cart</title>
+  <title>VoltRide — Cart & Checkout</title>
   <link rel="stylesheet" href="style.css"/>
   <style>
+
+    /* ─── CART TABLE ─────────────────────────────── */
     .cart-page-grid {
-      display: grid; grid-template-columns: 1fr 380px;
+      display: grid; grid-template-columns: 1fr 360px;
       gap: 3rem; align-items: start;
     }
     .cart-table-head {
@@ -34,20 +36,19 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
     }
     .cart-row {
       display: grid; grid-template-columns: 2fr 1fr 1fr 1fr 40px;
-      gap: 1rem; padding: 1.8rem 0;
+      gap: 1rem; padding: 1.6rem 0;
       border-bottom: 1px solid var(--border);
       align-items: center;
     }
     .cart-row-product { display: flex; gap: 1.2rem; align-items: center; }
     .cart-row-thumb {
-      width: 70px; height: 56px;
-      background: var(--mid);
-      border: 1px solid var(--border);
+      width: 64px; height: 52px;
+      background: var(--mid); border: 1px solid var(--border);
       display: flex; align-items: center; justify-content: center;
-      font-size: 1.5rem; flex-shrink: 0;
+      font-size: 1.4rem; flex-shrink: 0;
     }
     .cart-row-name { font-size: .9rem; font-weight: 500; }
-    .cart-row-sub { font-size: .72rem; color: var(--muted); margin-top: .2rem; }
+    .cart-row-sub  { font-size: .7rem; color: var(--muted); margin-top: .15rem; }
     .cart-row-price { font-size: .9rem; color: var(--volt); }
     .qty-control { display: flex; align-items: center; gap: .5rem; }
     .qty-control button {
@@ -55,13 +56,14 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
       background: var(--mid); border: 1px solid var(--border);
       color: var(--white); font-size: .9rem;
       display: flex; align-items: center; justify-content: center;
-      transition: border-color .2s, color .2s;
+      transition: border-color .2s, color .2s; cursor: pointer;
     }
     .qty-control button:hover { border-color: var(--volt); color: var(--volt); }
     .qty-control span { font-size: .88rem; min-width: 24px; text-align: center; }
-    .remove-btn { background: none; border: none; color: rgba(244,241,235,.25); font-size: 1rem; transition: color .2s; }
+    .remove-btn { background: none; border: none; color: rgba(244,241,235,.25); font-size: 1rem; transition: color .2s; cursor: pointer; }
     .remove-btn:hover { color: var(--red); }
 
+    /* order summary sidebar */
     .order-summary {
       background: var(--mid); border: 1px solid var(--border); padding: 2rem;
       position: sticky; top: 100px;
@@ -70,7 +72,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
     .summary-row { display: flex; justify-content: space-between; padding: .6rem 0; font-size: .85rem; }
     .summary-row.total { border-top: 1px solid var(--border); margin-top: .5rem; padding-top: 1rem; }
     .summary-row.total .label { font-family: 'Bebas Neue', sans-serif; font-size: 1.1rem; letter-spacing: .05em; }
-    .summary-row.total .val { font-family: 'Bebas Neue', sans-serif; font-size: 1.4rem; color: var(--volt); }
+    .summary-row.total .val   { font-family: 'Bebas Neue', sans-serif; font-size: 1.4rem; color: var(--volt); }
     .summary-label { color: var(--muted); }
     .promo-form { display: flex; gap: 0; margin: 1.5rem 0; }
     .promo-input {
@@ -84,30 +86,218 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
     .promo-apply {
       background: var(--volt); color: var(--black); border: none;
       padding: .7rem 1rem; font-size: .75rem; font-weight: 500;
-      letter-spacing: .08em; text-transform: uppercase; white-space: nowrap;
+      letter-spacing: .08em; text-transform: uppercase; cursor: pointer;
       transition: background .2s;
     }
     .promo-apply:hover { background: var(--volt2); }
+    .trust-badges { display: flex; gap: 1.2rem; margin-top: 1.5rem; flex-wrap: wrap; }
+    .trust-badge { display: flex; gap: .4rem; align-items: center; font-size: .7rem; color: var(--muted); }
     .emi-note { font-size: .72rem; color: var(--muted); line-height: 1.6; margin-top: 1rem; padding-top: 1rem; border-top: 1px solid var(--border); }
 
-    .empty-cart {
-      text-align: center; padding: 6rem 2rem;
-      grid-column: 1 / -1;
-    }
+    .empty-cart { text-align: center; padding: 6rem 2rem; grid-column: 1 / -1; }
     .empty-cart-icon { font-size: 4rem; margin-bottom: 1.5rem; opacity: .3; }
     .empty-cart h2 { font-family: 'Bebas Neue', sans-serif; font-size: 2.5rem; letter-spacing: .05em; margin-bottom: 1rem; }
-    .empty-cart p { color: var(--muted); margin-bottom: 2rem; }
+    .empty-cart p  { color: var(--muted); margin-bottom: 2rem; }
 
-    .trust-badges { display: flex; gap: 1.5rem; margin-top: 1.5rem; flex-wrap: wrap; }
-    .trust-badge { display: flex; gap: .5rem; align-items: center; font-size: .72rem; color: var(--muted); }
-    .trust-badge span:first-child { font-size: 1rem; }
+    /* ─── SECTION DIVIDER ────────────────────────── */
+    .checkout-divider {
+      display: flex; align-items: center; gap: 1.5rem;
+      padding: 2.5rem 0 1rem;
+      margin-top: 1rem;
+    }
+    .checkout-divider-line { flex: 1; height: 1px; background: var(--border); }
+    .checkout-divider-label {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1rem; letter-spacing: .14em; color: var(--volt);
+      white-space: nowrap;
+    }
 
+    /* ─── CHECKOUT FORM GRID ─────────────────────── */
+    .checkout-form-grid {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 3rem; margin-top: 1.5rem;
+    }
+    .checkout-form-full { grid-column: 1 / -1; }
+
+    /* section card */
+    .co-card {
+      border: 1px solid var(--border);
+      margin-bottom: 2rem;
+    }
+    .co-card:last-child { margin-bottom: 0; }
+    .co-card-head {
+      display: flex; align-items: center; gap: .9rem;
+      padding: 1.1rem 1.6rem;
+      background: var(--mid);
+      border-bottom: 1px solid var(--border);
+    }
+    .co-step {
+      width: 24px; height: 24px; border-radius: 50%;
+      background: var(--volt); color: var(--black);
+      font-size: .7rem; font-weight: 700;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+    }
+    .co-card-title {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.05rem; letter-spacing: .07em;
+    }
+    .co-card-body { padding: 1.6rem; }
+
+    /* sub-headings inside cards */
+    .co-sub {
+      font-size: .62rem; letter-spacing: .15em; text-transform: uppercase;
+      color: var(--volt);
+      margin: 1.2rem 0 .75rem;
+      padding-bottom: .4rem;
+      border-bottom: 1px solid var(--border);
+    }
+    .co-sub:first-child { margin-top: 0; }
+
+    /* ─── FORM FIELDS ────────────────────────────── */
+    .f-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+    .f-row.cols3 { grid-template-columns: 1fr 1fr 1fr; }
+    .f { display: flex; flex-direction: column; gap: .32rem; margin-bottom: .85rem; }
+    .f:last-child { margin-bottom: 0; }
+    .f label { font-size: .6rem; letter-spacing: .13em; text-transform: uppercase; color: var(--muted); }
+    .f .req { color: var(--volt); }
+    .f input, .f select, .f textarea {
+      background: var(--black); border: 1px solid var(--border);
+      color: var(--white); font-family: 'DM Sans', sans-serif;
+      font-size: .87rem; font-weight: 300;
+      padding: .72rem 1rem; outline: none; width: 100%;
+      transition: border-color .2s; -webkit-appearance: none; appearance: none;
+    }
+    .f input::placeholder, .f textarea::placeholder { color: rgba(244,241,235,.16); }
+    .f input:focus, .f select:focus, .f textarea:focus { border-color: var(--volt); }
+    .f input.err { border-color: var(--red); }
+    .f .hint { font-size: .62rem; color: var(--muted); margin-top: .18rem; }
+    .f .errmsg { font-size: .62rem; color: var(--red); display: none; margin-top: .18rem; }
+    .f .errmsg.on { display: block; }
+    .f select {
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='11' height='7' fill='none'%3E%3Cpath d='M1 1l4.5 4.5L10 1' stroke='%23555' stroke-width='1.4'/%3E%3C/svg%3E");
+      background-repeat: no-repeat; background-position: right .9rem center;
+      padding-right: 2.2rem; cursor: pointer;
+    }
+    .f select option { background: #1a1a1a; color: var(--white); }
+    .pfx { position: relative; }
+    .pfx-lbl { position: absolute; left: 1rem; top: 50%; transform: translateY(-50%); font-size: .82rem; color: var(--muted); pointer-events: none; }
+    .pfx input { padding-left: 2.4rem; }
+    .f textarea { resize: vertical; min-height: 70px; }
+
+    /* checkboxes */
+    .chk-row { display: flex; flex-direction: column; gap: .55rem; }
+    .chk { display: flex; align-items: flex-start; gap: .7rem; font-size: .8rem; color: var(--muted); cursor: pointer; }
+    .chk input[type="checkbox"] { width: 15px; height: 15px; flex-shrink: 0; margin-top: .18rem; accent-color: var(--volt); cursor: pointer; }
+
+    /* ─── PAYMENT OPTIONS ────────────────────────── */
+    .pay-list { display: flex; flex-direction: column; }
+    .pay-opt {
+      display: flex; align-items: center; gap: 1rem;
+      padding: .95rem 1.2rem;
+      border: 1px solid var(--border); border-top: none;
+      cursor: pointer; transition: border-color .2s, background .2s;
+    }
+    .pay-opt:first-child { border-top: 1px solid var(--border); }
+    .pay-opt:has(input:checked) { border-color: var(--volt); background: rgba(200,241,53,.04); z-index: 1; }
+    .pay-opt input[type="radio"] { width: 16px; height: 16px; accent-color: var(--volt); cursor: pointer; flex-shrink: 0; }
+    .pay-ico  { font-size: 1.25rem; flex-shrink: 0; }
+    .pay-name { font-size: .87rem; font-weight: 500; display: block; }
+    .pay-desc { font-size: .68rem; color: var(--muted); margin-top: .06rem; display: block; }
+    .pay-tag  { font-size: .58rem; letter-spacing: .1em; text-transform: uppercase; padding: .18rem .52rem; background: var(--volt); color: var(--black); font-weight: 600; flex-shrink: 0; margin-left: auto; }
+
+    /* card sub-fields — CSS :has() toggle, no JS needed */
+    .card-sub {
+      display: none; flex-direction: column; gap: .9rem;
+      border: 1px solid var(--border); border-top: none;
+      padding: 1.2rem 1.4rem;
+      background: rgba(200,241,53,.02);
+    }
+    .pay-list:has(#pay-card:checked) .card-sub { display: flex; }
+
+    /* upi sub-field */
+    .upi-sub {
+      display: none;
+      border: 1px solid var(--border); border-top: none;
+      padding: 1.2rem 1.4rem;
+      background: rgba(200,241,53,.02);
+    }
+    .pay-list:has(#pay-upi:checked) .upi-sub { display: block; }
+
+    /* security strip */
+    .sec-strip {
+      display: flex; flex-wrap: wrap; gap: 1rem;
+      padding: .85rem 1.1rem;
+      border: 1px solid var(--border); background: rgba(200,241,53,.02);
+      margin-top: 1.2rem;
+    }
+    .sec-item { display: flex; align-items: center; gap: .35rem; font-size: .67rem; color: var(--muted); }
+
+    /* ─── PLACE ORDER BUTTON ─────────────────────── */
+    .place-order-btn {
+      display: block; width: 100%;
+      background: var(--volt); color: var(--black); border: none;
+      padding: 1.05rem; margin-top: 2rem;
+      font-family: 'DM Sans', sans-serif; font-size: .9rem; font-weight: 500;
+      letter-spacing: .13em; text-transform: uppercase;
+      cursor: pointer; transition: background .2s, transform .15s;
+    }
+    .place-order-btn:hover  { background: var(--volt2); transform: translateY(-1px); }
+    .place-order-btn:active { transform: translateY(0); }
+    .tnc { font-size: .64rem; color: var(--muted); text-align: center; margin-top: .85rem; line-height: 1.65; }
+    .tnc a { color: rgba(244,241,235,.4); text-decoration: underline; }
+
+    /* ─── THANK YOU SCREEN ───────────────────────── */
+    #ty-screen {
+      display: none;
+      min-height: 80vh;
+      align-items: center; justify-content: center;
+      text-align: center;
+      padding: 5rem 2rem;
+    }
+    #ty-screen.show { display: flex; flex-direction: column; }
+    .ty-ring {
+      width: 80px; height: 80px; border-radius: 50%;
+      border: 2px solid var(--volt);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 2rem; color: var(--volt);
+      margin: 0 auto 2rem;
+      animation: ringPop .5s cubic-bezier(.34,1.56,.64,1) both;
+    }
+    .ty-order {
+      font-size: .68rem; letter-spacing: .22em; text-transform: uppercase;
+      color: var(--volt); margin-bottom: .7rem;
+    }
+    .ty-title {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(2.8rem,6vw,5rem);
+      letter-spacing: .04em; line-height: .92;
+      margin-bottom: 1.2rem;
+    }
+    .ty-title span { color: var(--volt); }
+    .ty-msg { font-size: .92rem; color: var(--muted); line-height: 1.78; max-width: 420px; margin: 0 auto 2.5rem; }
+    .ty-meta {
+      display: inline-flex; gap: 2.5rem; flex-wrap: wrap; justify-content: center;
+      border: 1px solid var(--border); background: var(--mid);
+      padding: 1.2rem 2.5rem; margin-bottom: 2.5rem;
+    }
+    .ty-meta-item .val { font-family: 'Bebas Neue', sans-serif; font-size: 1.6rem; color: var(--volt); line-height: 1; }
+    .ty-meta-item .lbl { font-size: .6rem; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); margin-top: .2rem; }
+    .ty-actions { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; }
+
+    @keyframes ringPop {
+      from { opacity: 0; transform: scale(.7); }
+      to   { opacity: 1; transform: scale(1); }
+    }
+
+    /* ─── RESPONSIVE ─────────────────────────────── */
     @media (max-width: 900px) {
       .cart-page-grid { grid-template-columns: 1fr; }
       .cart-table-head { display: none; }
       .cart-row { grid-template-columns: 1fr; gap: .8rem; }
-      .cart-row-product { flex-direction: row; }
       .order-summary { position: static; }
+      .checkout-form-grid { grid-template-columns: 1fr; gap: 0; }
+      .f-row, .f-row.cols3 { grid-template-columns: 1fr; }
     }
   </style>
 </head>
@@ -117,8 +307,9 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 <!-- End Google Tag Manager (noscript) -->
 <div class="cursor" id="cursor"></div>
-<div class="toast" id="toast"></div>
+<div class="toast"  id="toast"></div>
 
+<!-- NAV -->
 <nav class="nav">
   <a class="nav-logo" href="index.html"><span class="accent">VOLT</span>RIDE</a>
   <ul class="nav-links">
@@ -132,27 +323,303 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     <button class="nav-hamburger" onclick="openMobileMenu()"><span></span><span></span><span></span></button>
   </div>
 </nav>
-<div class="mobile-menu" id="mobileMenu"><button class="mobile-close" onclick="closeMobileMenu()">✕</button><a href="index.html" onclick="closeMobileMenu()">Home</a><a href="bikes.html" onclick="closeMobileMenu()">Bikes</a><a href="about.html" onclick="closeMobileMenu()">About</a><a href="contact.html" onclick="closeMobileMenu()">Contact</a></div>
+<div class="mobile-menu" id="mobileMenu">
+  <button class="mobile-close" onclick="closeMobileMenu()">✕</button>
+  <a href="index.html" onclick="closeMobileMenu()">Home</a>
+  <a href="bikes.html" onclick="closeMobileMenu()">Bikes</a>
+  <a href="about.html" onclick="closeMobileMenu()">About</a>
+  <a href="contact.html" onclick="closeMobileMenu()">Contact</a>
+</div>
 <div class="cart-overlay" id="cartOverlay" onclick="closeCart()"></div>
-<div class="cart-drawer" id="cartDrawer"><div class="cart-head"><h3>Cart</h3><button class="cart-close" onclick="closeCart()">✕</button></div><div class="cart-body" id="cartBody"></div><div class="cart-foot"><div class="cart-total"><span class="cart-total-label">Total</span><span class="cart-total-price" id="cartTotal">₹0</span></div><button class="btn btn-volt" style="width:100%;justify-content:center" onclick="checkout()">Checkout →</button></div></div>
+<div class="cart-drawer" id="cartDrawer">
+  <div class="cart-head"><h3>Cart</h3><button class="cart-close" onclick="closeCart()">✕</button></div>
+  <div class="cart-body" id="cartBody"></div>
+  <div class="cart-foot">
+    <div class="cart-total"><span class="cart-total-label">Total</span><span class="cart-total-price" id="cartTotal">₹0</span></div>
+    <button class="btn btn-volt" style="width:100%;justify-content:center" onclick="closeCart()">Continue Checkout ↓</button>
+  </div>
+</div>
 
-<div class="page-wrap">
+<!-- ════════════════════════════════════════════════════
+     MAIN PAGE CONTENT
+════════════════════════════════════════════════════ -->
+<div class="page-wrap" id="mainPage">
+
+  <!-- PAGE HEADER -->
   <div class="page-hero" style="padding-bottom:2rem">
-    <div class="breadcrumb"><a href="index.html">Home</a> / <span>Cart</span></div>
-    <h1 class="page-hero-title anim-fadeup" style="font-size:clamp(2.5rem,5vw,5rem)">Your <span style="color:var(--volt)">Cart</span></h1>
+    <div class="breadcrumb"><a href="index.html">Home</a> / <span>Cart & Checkout</span></div>
+    <h1 class="page-hero-title anim-fadeup" style="font-size:clamp(2.5rem,5vw,5rem)">
+      Your <span style="color:var(--volt)">Cart</span>
+    </h1>
   </div>
 
-  <section class="section" style="padding-top:2rem">
+  <section class="section" style="padding-top:1.5rem">
+
+    <!-- ── STEP 1: CART ITEMS ── -->
     <div class="cart-page-grid" id="cartPageWrap">
-      <!-- filled by JS -->
+      <!-- rendered by renderCartPage() -->
     </div>
+
+    <!-- ── STEP 2: BUYER DETAILS + PAYMENT ── -->
+    <div id="checkoutSection" style="display:none; margin-top:1rem">
+
+      <div class="checkout-divider">
+        <div class="checkout-divider-line"></div>
+        <span class="checkout-divider-label">⚡ Buyer Details</span>
+        <div class="checkout-divider-line"></div>
+      </div>
+
+      <div class="checkout-form-grid">
+
+        <!-- LEFT COLUMN -->
+        <div>
+
+          <!-- Buyer Info Card -->
+          <div class="co-card">
+            <div class="co-card-head">
+              <span class="co-step">1</span>
+              <span class="co-card-title">Personal Information</span>
+            </div>
+            <div class="co-card-body">
+              <div class="f-row">
+                <div class="f">
+                  <label>First Name <span class="req">*</span></label>
+                  <input type="text" id="co-fname" placeholder="Arjun" autocomplete="given-name"/>
+                  <span class="errmsg" id="e-fname">Required</span>
+                </div>
+                <div class="f">
+                  <label>Last Name <span class="req">*</span></label>
+                  <input type="text" id="co-lname" placeholder="Mehta" autocomplete="family-name"/>
+                  <span class="errmsg" id="e-lname">Required</span>
+                </div>
+              </div>
+              <div class="f">
+                <label>Email Address <span class="req">*</span></label>
+                <input type="email" id="co-email" placeholder="arjun@email.com" autocomplete="email"/>
+                <span class="errmsg" id="e-email">Enter a valid email address</span>
+              </div>
+              <div class="f">
+                <label>Mobile Number <span class="req">*</span></label>
+                <div class="pfx">
+                  <span class="pfx-lbl">+91</span>
+                  <input type="tel" id="co-phone" placeholder="98765 43210" maxlength="10" autocomplete="tel"/>
+                </div>
+                <span class="errmsg" id="e-phone">Enter a valid 10-digit number</span>
+              </div>
+              <div class="f">
+                <label>Alternate Phone</label>
+                <div class="pfx">
+                  <span class="pfx-lbl">+91</span>
+                  <input type="tel" id="co-altphone" placeholder="Optional" maxlength="10"/>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Shipping Address Card -->
+          <div class="co-card">
+            <div class="co-card-head">
+              <span class="co-step">2</span>
+              <span class="co-card-title">Delivery Address</span>
+            </div>
+            <div class="co-card-body">
+              <div class="f">
+                <label>Address Line 1 <span class="req">*</span></label>
+                <input type="text" id="co-addr1" placeholder="House no., Street, Area" autocomplete="address-line1"/>
+                <span class="errmsg" id="e-addr1">Required</span>
+              </div>
+              <div class="f">
+                <label>Address Line 2</label>
+                <input type="text" id="co-addr2" placeholder="Landmark, Colony (optional)" autocomplete="address-line2"/>
+              </div>
+              <div class="f-row cols3">
+                <div class="f">
+                  <label>City <span class="req">*</span></label>
+                  <input type="text" id="co-city" placeholder="Bengaluru" autocomplete="address-level2"/>
+                  <span class="errmsg" id="e-city">Required</span>
+                </div>
+                <div class="f">
+                  <label>State <span class="req">*</span></label>
+                  <select id="co-state">
+                    <option value="">Select</option>
+                    <option>Andhra Pradesh</option><option>Assam</option>
+                    <option>Bihar</option><option>Delhi</option>
+                    <option>Goa</option><option>Gujarat</option>
+                    <option>Haryana</option><option>Himachal Pradesh</option>
+                    <option>Jharkhand</option><option>Karnataka</option>
+                    <option>Kerala</option><option>Madhya Pradesh</option>
+                    <option>Maharashtra</option><option>Odisha</option>
+                    <option>Punjab</option><option>Rajasthan</option>
+                    <option>Tamil Nadu</option><option>Telangana</option>
+                    <option>Uttar Pradesh</option><option>Uttarakhand</option>
+                    <option>West Bengal</option>
+                  </select>
+                  <span class="errmsg" id="e-state">Required</span>
+                </div>
+                <div class="f">
+                  <label>PIN Code <span class="req">*</span></label>
+                  <input type="text" id="co-pin" placeholder="560001" maxlength="6"/>
+                  <span class="errmsg" id="e-pin">Enter 6-digit PIN</span>
+                </div>
+              </div>
+              <div class="f">
+                <label>Delivery Instructions</label>
+                <textarea id="co-notes" placeholder="e.g. Call before delivery, leave with security..."></textarea>
+              </div>
+              <div class="chk-row" style="margin-top:.5rem">
+                <label class="chk"><input type="checkbox" id="co-email-upd" checked/><span>Email me order updates and tracking info</span></label>
+                <label class="chk"><input type="checkbox" id="co-sms-upd" checked/><span>SMS / WhatsApp delivery notifications</span></label>
+              </div>
+            </div>
+          </div>
+
+        </div><!-- /left column -->
+
+        <!-- RIGHT COLUMN: Payment -->
+        <div>
+          <div class="co-card">
+            <div class="co-card-head">
+              <span class="co-step">3</span>
+              <span class="co-card-title">Payment Method</span>
+            </div>
+            <div class="co-card-body">
+
+              <div class="pay-list" id="payList">
+
+                <!-- Credit / Debit Card -->
+                <label class="pay-opt">
+                  <input type="radio" id="pay-card" name="payment_method" value="card" checked/>
+                  <span class="pay-ico">💳</span>
+                  <span>
+                    <span class="pay-name">Credit / Debit Card</span>
+                    <span class="pay-desc">Visa · Mastercard · RuPay · Amex</span>
+                  </span>
+                </label>
+
+                <!-- Card sub-fields (CSS :has shows when #pay-card checked) -->
+                <div class="card-sub">
+                  <div class="f" style="margin-bottom:0">
+                    <label>Card Number <span class="req">*</span></label>
+                    <input type="text" id="co-cardnum" placeholder="1234  5678  9012  3456" maxlength="19" oninput="fmtCard(this)" autocomplete="cc-number"/>
+                    <span class="errmsg" id="e-cardnum">Enter a valid 16-digit number</span>
+                  </div>
+                  <div class="f" style="margin-bottom:0">
+                    <label>Cardholder Name <span class="req">*</span></label>
+                    <input type="text" id="co-cardname" placeholder="ARJUN MEHTA" style="text-transform:uppercase" autocomplete="cc-name"/>
+                    <span class="errmsg" id="e-cardname">Required</span>
+                  </div>
+                  <div class="f-row" style="margin-bottom:0">
+                    <div class="f" style="margin-bottom:0">
+                      <label>Expiry <span class="req">*</span></label>
+                      <input type="text" id="co-expiry" placeholder="MM / YY" maxlength="7" oninput="fmtExpiry(this)" autocomplete="cc-exp"/>
+                      <span class="errmsg" id="e-expiry">Enter valid expiry</span>
+                    </div>
+                    <div class="f" style="margin-bottom:0">
+                      <label>CVV <span class="req">*</span></label>
+                      <input type="password" id="co-cvv" placeholder="•••" maxlength="4" autocomplete="cc-csc"/>
+                      <span class="errmsg" id="e-cvv">Required</span>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- UPI -->
+                <label class="pay-opt">
+                  <input type="radio" id="pay-upi" name="payment_method" value="upi"/>
+                  <span class="pay-ico">📱</span>
+                  <span>
+                    <span class="pay-name">UPI</span>
+                    <span class="pay-desc">PhonePe · GPay · Paytm · BHIM</span>
+                  </span>
+                </label>
+
+                <!-- UPI sub-field -->
+                <div class="upi-sub">
+                  <div class="f" style="margin-bottom:0">
+                    <label>UPI ID <span class="req">*</span></label>
+                    <input type="text" id="co-upiid" placeholder="yourname@upi"/>
+                    <span class="hint">e.g. arjun@okaxis · 9876543210@ybl</span>
+                    <span class="errmsg" id="e-upiid">Enter a valid UPI ID</span>
+                  </div>
+                </div>
+
+                <!-- Net Banking -->
+                <label class="pay-opt">
+                  <input type="radio" name="payment_method" value="netbanking"/>
+                  <span class="pay-ico">🏦</span>
+                  <span>
+                    <span class="pay-name">Net Banking</span>
+                    <span class="pay-desc">All major Indian banks</span>
+                  </span>
+                </label>
+
+                <!-- EMI -->
+                <label class="pay-opt">
+                  <input type="radio" name="payment_method" value="emi"/>
+                  <span class="pay-ico">📅</span>
+                  <span>
+                    <span class="pay-name">EMI</span>
+                    <span class="pay-desc">3 – 24 months, 0% for 6 months</span>
+                  </span>
+                  <span class="pay-tag">0% Available</span>
+                </label>
+
+                <!-- Cash on Delivery -->
+                <label class="pay-opt">
+                  <input type="radio" name="payment_method" value="cod"/>
+                  <span class="pay-ico">💵</span>
+                  <span>
+                    <span class="pay-name">Cash on Delivery</span>
+                    <span class="pay-desc">Up to ₹1,50,000 · ₹250 handling fee</span>
+                  </span>
+                </label>
+
+              </div><!-- /pay-list -->
+
+              <!-- Security strip -->
+              <div class="sec-strip">
+                <span class="sec-item">🔒 256-bit SSL</span>
+                <span class="sec-item">✅ PCI-DSS</span>
+                <span class="sec-item">🛡️ Razorpay</span>
+                <span class="sec-item">↩️ 7-Day Returns</span>
+              </div>
+
+              <!-- Order total recap -->
+              <div id="payTotalRecap" style="margin-top:1.2rem;padding:1rem;border:1px solid var(--border);background:var(--black)">
+                <div style="display:flex;justify-content:space-between;font-size:.8rem;margin-bottom:.4rem">
+                  <span style="color:var(--muted)">Subtotal</span><span id="recapSubtotal">—</span>
+                </div>
+                <div style="display:flex;justify-content:space-between;font-size:.8rem;margin-bottom:.4rem">
+                  <span style="color:var(--muted)">Shipping</span><span id="recapShipping">—</span>
+                </div>
+                <div style="display:flex;justify-content:space-between;border-top:1px solid var(--border);padding-top:.7rem;margin-top:.4rem">
+                  <span style="font-family:'Bebas Neue',sans-serif;font-size:1.1rem;letter-spacing:.05em">Total</span>
+                  <span style="font-family:'Bebas Neue',sans-serif;font-size:1.4rem;color:var(--volt)" id="recapTotal">—</span>
+                </div>
+              </div>
+
+              <!-- Place Order -->
+              <button class="place-order-btn" onclick="placeOrder()">
+                Place Order →
+              </button>
+              <p class="tnc">By placing your order you agree to our <a href="#">Terms</a> and <a href="#">Privacy Policy</a>. VoltRide never stores card details.</p>
+
+            </div>
+          </div><!-- /payment card -->
+        </div><!-- /right column -->
+
+      </div><!-- /checkout-form-grid -->
+    </div><!-- /checkoutSection -->
+
   </section>
 
   <!-- RECOMMENDED -->
-  <section class="section" style="background:var(--mid);padding-top:4rem;padding-bottom:4rem">
-    <div class="section-header"><h2 class="section-title">You Might Also <span class="accent">Like</span></h2><a href="bikes.html" class="btn btn-outline btn-sm">All Bikes →</a></div>
+  <section class="section" style="background:var(--mid);padding-top:4rem;padding-bottom:4rem" id="recoSection">
+    <div class="section-header">
+      <h2 class="section-title">You Might Also <span class="accent">Like</span></h2>
+      <a href="bikes.html" class="btn btn-outline btn-sm">All Bikes →</a>
+    </div>
     <div class="products-grid">
-      <div class="product-card" data-category="urban">
+      <div class="product-card">
         <span class="tag tag-filled-volt" style="margin-bottom:1rem">Popular</span>
         <div class="card-img" style="font-size:4rem;color:var(--volt)">🚲</div>
         <div class="card-name">VOLT URBAN X1</div>
@@ -194,92 +661,220 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     </div>
     <div class="footer-bottom"><p>© 2025 VoltRide Pvt. Ltd.</p><p><a href="#">Privacy</a> · <a href="#">Terms</a></p></div>
   </footer>
+
+</div><!-- /mainPage -->
+
+<!-- ════════════════════════════════════════════════════
+     THANK YOU SCREEN (hidden until order placed)
+════════════════════════════════════════════════════ -->
+<div id="ty-screen">
+  <div class="ty-ring">✓</div>
+  <p class="ty-order" id="ty-orderid">ORDER #VR-000000</p>
+  <h1 class="ty-title">Your Order Was<br/><span>Placed Successfully</span></h1>
+  <p class="ty-msg">
+    Thank you for choosing VoltRide! A confirmation has been sent to your email.
+    Our team will contact you within 24 hours to schedule delivery and assembly.
+  </p>
+  <div class="ty-meta">
+    <div class="ty-meta-item"><div class="val">5–7</div><div class="lbl">Business Days</div></div>
+    <div style="width:1px;background:var(--border)"></div>
+    <div class="ty-meta-item"><div class="val">FREE</div><div class="lbl">Shipping</div></div>
+    <div style="width:1px;background:var(--border)"></div>
+    <div class="ty-meta-item"><div class="val">3 YR</div><div class="lbl">Warranty</div></div>
+  </div>
+  <div class="ty-actions">
+    <a href="index.html" class="btn btn-volt btn-lg">Back to Home</a>
+    <a href="bikes.html" class="btn btn-outline btn-lg">Shop More Bikes</a>
+  </div>
 </div>
 
+<!-- ── SCRIPTS ── -->
 <script src="script.js"></script>
 <script>
+/* ═══════════════════════════════════════════════════
+   CART PAGE — rendering + validation + place order
+═══════════════════════════════════════════════════ */
+
+/* ── Cart table renderer ─────────────────────────── */
 function renderCartPage() {
-  const wrap = document.getElementById('cartPageWrap');
-  const items = VoltCart.get();
+  var wrap  = document.getElementById('cartPageWrap');
+  var coSec = document.getElementById('checkoutSection');
+  var items = VoltCart.get();
 
   if (items.length === 0) {
-    wrap.innerHTML = `
-      <div class="empty-cart">
-        <div class="empty-cart-icon">🛒</div>
-        <h2>Your Cart is Empty</h2>
-        <p>Looks like you haven't added any bikes yet.</p>
-        <a href="bikes.html" class="btn btn-volt btn-lg">Shop All Bikes →</a>
-      </div>`;
+    wrap.innerHTML =
+      '<div class="empty-cart">' +
+        '<div class="empty-cart-icon">🛒</div>' +
+        '<h2>Your Cart is Empty</h2>' +
+        '<p>Looks like you haven\'t added any bikes yet.</p>' +
+        '<a href="bikes.html" class="btn btn-volt btn-lg">Shop All Bikes →</a>' +
+      '</div>';
+    if (coSec) coSec.style.display = 'none';
     return;
   }
 
-  const subtotal = VoltCart.total();
-  const shipping = subtotal >= 100000 ? 0 : 2500;
-  const gst = Math.round(subtotal * 0.18);
-  const total = subtotal + shipping;
+  var subtotal = VoltCart.total();
+  var shipping = subtotal >= 100000 ? 0 : 2500;
+  var total    = subtotal + shipping;
 
-  const rowsHtml = items.map((item, i) => `
-    <div class="cart-row">
-      <div class="cart-row-product">
-        <div class="cart-row-thumb" style="color:${item.color}">${item.emoji}</div>
-        <div>
-          <div class="cart-row-name">${item.name}</div>
-          <div class="cart-row-sub">Electric Bicycle</div>
-        </div>
-      </div>
-      <div class="cart-row-price">₹${item.price.toLocaleString('en-IN')}</div>
-      <div class="qty-control">
-        <button onclick="VoltCart.changeQty(${i},-1); renderCartPage()">−</button>
-        <span>${item.qty}</span>
-        <button onclick="VoltCart.changeQty(${i},1); renderCartPage()">+</button>
-      </div>
-      <div class="cart-row-price">₹${(item.price*item.qty).toLocaleString('en-IN')}</div>
-      <button class="remove-btn" onclick="VoltCart.remove(${i}); renderCartPage(); showToast('Item removed')">✕</button>
-    </div>`).join('');
+  /* update payment recap panel */
+  var rs = document.getElementById('recapSubtotal');
+  var rh = document.getElementById('recapShipping');
+  var rt = document.getElementById('recapTotal');
+  if (rs) rs.textContent = '₹' + subtotal.toLocaleString('en-IN');
+  if (rh) rh.innerHTML  = shipping === 0 ? '<span style="color:var(--volt)">FREE</span>' : '₹' + shipping.toLocaleString('en-IN');
+  if (rt) rt.textContent = '₹' + total.toLocaleString('en-IN');
 
-  wrap.innerHTML = `
-    <div>
-      <div class="cart-table-head">
-        <span>Product</span><span>Price</span><span>Quantity</span><span>Total</span><span></span>
-      </div>
-      ${rowsHtml}
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-top:2rem;flex-wrap:wrap;gap:1rem">
-        <a href="bikes.html" class="btn btn-outline btn-sm">← Continue Shopping</a>
-        <button class="btn btn-dark btn-sm" onclick="VoltCart.clear(); renderCartPage(); showToast('Cart cleared')">Clear Cart</button>
-      </div>
-    </div>
-    <div class="order-summary">
-      <div class="summary-title">Order Summary</div>
-      <div class="summary-row"><span class="summary-label">Subtotal</span><span>₹${subtotal.toLocaleString('en-IN')}</span></div>
-      <div class="summary-row"><span class="summary-label">Shipping</span><span>${shipping === 0 ? '<span style="color:var(--volt)">FREE</span>' : '₹' + shipping.toLocaleString('en-IN')}</span></div>
-      <div class="summary-row"><span class="summary-label">GST (18%)</span><span>Included</span></div>
-      <div class="summary-row total"><span class="label">Total</span><span class="val">₹${total.toLocaleString('en-IN')}</span></div>
+  /* cart rows */
+  var rows = items.map(function(item, i) {
+    return '<div class="cart-row">' +
+      '<div class="cart-row-product">' +
+        '<div class="cart-row-thumb" style="color:' + item.color + '">' + item.emoji + '</div>' +
+        '<div><div class="cart-row-name">' + item.name + '</div><div class="cart-row-sub">Electric Bicycle</div></div>' +
+      '</div>' +
+      '<div class="cart-row-price">₹' + item.price.toLocaleString('en-IN') + '</div>' +
+      '<div class="qty-control">' +
+        '<button onclick="VoltCart.changeQty(' + i + ',-1); renderCartPage()">−</button>' +
+        '<span>' + item.qty + '</span>' +
+        '<button onclick="VoltCart.changeQty(' + i + ',1); renderCartPage()">+</button>' +
+      '</div>' +
+      '<div class="cart-row-price">₹' + (item.price * item.qty).toLocaleString('en-IN') + '</div>' +
+      '<button class="remove-btn" onclick="VoltCart.remove(' + i + '); renderCartPage(); showToast(\'Item removed\')">✕</button>' +
+    '</div>';
+  }).join('');
 
-      <div class="promo-form">
-        <input class="promo-input" id="promoCode" type="text" placeholder="Promo code"/>
-        <button class="promo-apply" onclick="applyPromo()">Apply</button>
-      </div>
+  wrap.innerHTML =
+    '<div>' +
+      '<div class="cart-table-head">' +
+        '<span>Product</span><span>Price</span><span>Quantity</span><span>Total</span><span></span>' +
+      '</div>' +
+      rows +
+      '<div style="display:flex;justify-content:space-between;align-items:center;margin-top:2rem;flex-wrap:wrap;gap:1rem">' +
+        '<a href="bikes.html" class="btn btn-outline btn-sm">← Continue Shopping</a>' +
+        '<button class="btn btn-dark btn-sm" onclick="VoltCart.clear(); renderCartPage(); showToast(\'Cart cleared\')">Clear Cart</button>' +
+      '</div>' +
+    '</div>' +
+    '<div class="order-summary">' +
+      '<div class="summary-title">Order Summary</div>' +
+      '<div class="summary-row"><span class="summary-label">Subtotal</span><span>₹' + subtotal.toLocaleString('en-IN') + '</span></div>' +
+      '<div class="summary-row"><span class="summary-label">Shipping</span><span>' + (shipping === 0 ? '<span style="color:var(--volt)">FREE</span>' : '₹' + shipping.toLocaleString('en-IN')) + '</span></div>' +
+      '<div class="summary-row"><span class="summary-label">GST (18%)</span><span>Included</span></div>' +
+      '<div class="summary-row total"><span class="label">Total</span><span class="val">₹' + total.toLocaleString('en-IN') + '</span></div>' +
+      '<div class="promo-form">' +
+        '<input class="promo-input" id="promoCode" type="text" placeholder="Promo code (VOLT10)"/>' +
+        '<button class="promo-apply" onclick="applyPromo()">Apply</button>' +
+      '</div>' +
+      '<div class="trust-badges">' +
+        '<div class="trust-badge"><span>🔒</span><span>Secure Checkout</span></div>' +
+        '<div class="trust-badge"><span>↩️</span><span>7-Day Returns</span></div>' +
+        '<div class="trust-badge"><span>📦</span><span>Free Shipping ₹1L+</span></div>' +
+      '</div>' +
+      '<div class="emi-note">💳 <strong style="color:var(--white)">0% EMI available</strong> for 6 months on credit cards.</div>' +
+    '</div>';
 
-      <button class="btn btn-volt btn-lg" style="width:100%;justify-content:center;margin-top:.5rem" onclick="checkout()">Proceed to Checkout →</button>
-
-      <div class="trust-badges">
-        <div class="trust-badge"><span>🔒</span><span>Secure Checkout</span></div>
-        <div class="trust-badge"><span>↩️</span><span>7-Day Returns</span></div>
-        <div class="trust-badge"><span>📦</span><span>Free Shipping ₹1L+</span></div>
-      </div>
-      <div class="emi-note">
-        💳 <strong style="color:var(--white)">0% EMI available</strong> for 6 months on credit cards. Long-term EMI via Bajaj Finserv & HDFC.
-      </div>
-    </div>`;
+  /* show buyer/payment section */
+  if (coSec) coSec.style.display = 'block';
 }
 
+/* ── Promo code ──────────────────────────────────── */
 function applyPromo() {
-  const code = document.getElementById('promoCode')?.value.trim().toUpperCase();
-  if (code === 'VOLT10') { showToast('✓ 10% discount applied! (Demo only)'); }
-  else if (code === 'FIRSTRIDE') { showToast('✓ Free delivery unlocked! (Demo only)'); }
-  else { showToast('Invalid promo code'); }
+  var el   = document.getElementById('promoCode');
+  var code = el ? el.value.trim().toUpperCase() : '';
+  if      (code === 'VOLT10')    showToast('✓ 10% discount applied!');
+  else if (code === 'FIRSTRIDE') showToast('✓ Free delivery unlocked!');
+  else if (code === 'VOLT500')   showToast('✓ ₹500 flat off applied!');
+  else                           showToast('⚠ Invalid code. Try VOLT10, VOLT500 or FIRSTRIDE');
 }
 
+/* ── Validation helpers ──────────────────────────── */
+function fv(id)  { var e = document.getElementById(id); return e ? e.value.trim() : ''; }
+function fe(id, show) {
+  var inp = document.getElementById(id);
+  var err = document.getElementById('e-' + id.replace('co-',''));
+  if (inp) inp.classList.toggle('err', show);
+  if (err) err.classList.toggle('on',  show);
+  return show;
+}
+function clearErr(ids) { ids.forEach(function(id){ fe(id, false); }); }
+
+/* ── Card number / expiry formatters ─────────────── */
+function fmtCard(inp) {
+  var v = inp.value.replace(/\D/g,'').substring(0,16);
+  inp.value = v.replace(/(.{4})/g,'$1 ').trim();
+}
+function fmtExpiry(inp) {
+  var v = inp.value.replace(/\D/g,'');
+  if (v.length >= 2) v = v.substring(0,2) + ' / ' + v.substring(2,4);
+  inp.value = v;
+}
+
+/* ── Place Order ─────────────────────────────────── */
+function placeOrder() {
+  var ok = true;
+
+  /* Personal info */
+  clearErr(['co-fname','co-lname','co-email','co-phone','co-addr1','co-city','co-state','co-pin']);
+
+  if (!fv('co-fname'))  { fe('co-fname',  true); ok = false; }
+  if (!fv('co-lname'))  { fe('co-lname',  true); ok = false; }
+  var email = fv('co-email');
+  if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { fe('co-email', true); ok = false; }
+  var phone = fv('co-phone');
+  if (!phone || !/^\d{10}$/.test(phone)) { fe('co-phone', true); ok = false; }
+
+  /* Shipping */
+  if (!fv('co-addr1')) { fe('co-addr1', true); ok = false; }
+  if (!fv('co-city'))  { fe('co-city',  true); ok = false; }
+  if (!fv('co-state')) { fe('co-state', true); ok = false; }
+  var pin = fv('co-pin');
+  if (!pin || !/^\d{6}$/.test(pin)) { fe('co-pin', true); ok = false; }
+
+  /* Payment — card or UPI specific */
+  var payMethod = '';
+  var radios = document.querySelectorAll('input[name="payment_method"]');
+  for (var i = 0; i < radios.length; i++) { if (radios[i].checked) { payMethod = radios[i].value; break; } }
+
+  if (payMethod === 'card') {
+    var cardnum = fv('co-cardnum').replace(/\s/g,'');
+    if (cardnum.length < 16)        { fe('co-cardnum',  true); ok = false; }
+    if (!fv('co-cardname'))         { fe('co-cardname', true); ok = false; }
+    if (fv('co-expiry').length < 5) { fe('co-expiry',   true); ok = false; }
+    if (fv('co-cvv').length < 3)    { fe('co-cvv',      true); ok = false; }
+  }
+  if (payMethod === 'upi') {
+    var uid = fv('co-upiid');
+    if (!uid || uid.indexOf('@') === -1) { fe('co-upiid', true); ok = false; }
+  }
+
+  if (!ok) {
+    showToast('⚠ Please fill in all required fields');
+    /* scroll to first error */
+    var firstErr = document.querySelector('.err, .errmsg.on');
+    if (firstErr) firstErr.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    return;
+  }
+
+  /* All good — show processing then thank you */
+  var btn = document.querySelector('.place-order-btn');
+  if (btn) { btn.textContent = 'Processing…'; btn.disabled = true; }
+
+  setTimeout(function() {
+    /* generate order ID */
+    var orderId = 'VR-' + Date.now().toString(36).toUpperCase();
+    document.getElementById('ty-orderid').textContent = 'ORDER #' + orderId;
+
+    /* hide main page, show thank you */
+    document.getElementById('mainPage').style.display   = 'none';
+    document.getElementById('ty-screen').classList.add('show');
+
+    /* clear cart */
+    VoltCart.clear();
+
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }, 1200);
+}
+
+/* ── Init ────────────────────────────────────────── */
 document.addEventListener('DOMContentLoaded', renderCartPage);
 </script>
 </body>
